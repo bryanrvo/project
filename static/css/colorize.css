@@ -1,0 +1,10 @@
+.bv_mainselect{
+	left: 125px;
+    top: 50px;
+    position: relative;
+}
+.colorPicker{
+	left:-100px;
+    top: 150px;
+    position: relative;
+}
