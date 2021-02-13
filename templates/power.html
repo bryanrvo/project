@@ -1,0 +1,87 @@
+{% extends "Template.html" %}
+    {% block css %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/power.css') }}">
+    <meta http-equiv="refresh" content="15" >
+    {% endblock %}
+    {% block content %}
+        <script type="text/javascript">
+            function test() {
+                
+                //var test1 = document.getElementById("led_strip").checked;
+                //var test2 = document.getElementById("ambilight").checked;
+                //var test3 = document.getElementById("sensor").checked;
+                //console.log(test1)
+                //if (test1 == true){
+                    //test1 = document.getElementById("led_strip").value;
+                //} else if (test1 == false){
+                    //test1 = "None";
+                //}
+                //if (test2 == true){
+                    //test2 = document.getElementById("ambilight").value;
+                //} else if (test2 == false){
+                    //test2 = "None";
+                //}
+                //if (test3 == true){
+                    //test3 = document.getElementById("sensor").value;
+                //} else if (test3 == false){
+                    //test3 = "None";
+                //}
+                //console.log(test1)
+                //$.post("/power", {
+                    //led_strip: test1,
+                    //ambilight: test2,
+                    //sensor: test3
+                    
+                //});
+            }
+        </script>
+        <form method="POST" action="/power">
+            <h3 class="led strip">led strip</h3>
+            <label class="test">
+                <input id="led_strip" type="checkbox" name="led_strip" value="led strip" {{ led_stripValue }} onclick="test()">
+                <span class="btn"></span>
+                <i class="fa fa-power-off"></i>
+            </label>
+            <h3 class="ambilight">ambilight</h3>
+            <label class="test1">
+                <input id="ambilight"  type="checkbox" name="ambilight" value="ambilight" {{ ambilightValue }} onclick="test()">
+                <span class="btn"></span>
+                <i class="fa fa-power-off"></i>
+            </label>
+            <h3 class="sensor">sensor</h3>
+            <label class="test2">
+                <input id="sensor"  type="checkbox" name="sensor" value="sensor" {{ sensorValue }} onclick="test()">
+                <span class="btn"></span>
+                <i class="fa fa-power-off"></i>
+            </label>
+            <h3 class="submit">submit</h3>
+            <label class="test3">
+                <input type="Submit" name="" value="">
+                <span class="btn"></span>
+                <i class="fas fa-upload"></i>
+            </label>
+        </form>
+        <nav class="nav" id="power">
+            <a href="power" class="nav__link active">
+                <i class="material-icons nav__icon">power_settings_new</i>
+                <span class="nav__text">power</span>
+            </a>
+            <a href="colorize" class="nav__link">
+                <i class="material-icons nav__icon">colorize</i>
+                <span class="nav__text">colorize</span>
+            </a>
+            <a href="#" class="nav__link">
+               <i class="material-icons nav__icon">devices</i>
+               <span class="nav__text">Devices</span>
+            </a>
+            <a href="alarm" class="nav__link">
+                <i class="material-icons nav__icon">alarm</i>
+                <span class="nav__text">alarm</span>
+            </a>
+            <a href="Sunset" class="nav__link">
+                <i class="material-icons nav__icon">wb_sunny</i>
+                <span class="nav__text">Sunset</span>
+            </a>
+        </nav>
+    {% endblock %}
+ 

@@ -1,0 +1,89 @@
+{% extends "Template.html" %}
+    {% block css %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bvselect.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/colorize.css') }}">
+    {% endblock %}
+    {% block content %}
+	<select id ="selectbox" onchange="test()">
+	  <option value="vullen" {% if state=="vullen" %} selected {% endif %}>vullen</option>
+	  <option data-img="{{ url_for('static', filename='images/Ajaxlogo.png') }}" value="ajax" {% if state=="ajax" %} selected {% endif %}>ajax</option>
+	  <option data-img="{{ url_for('static', filename='images/download.jpeg') }}"value="ajaxscore" {% if state=="ajaxscore" %} selected {% endif %}>ajaxscore</option>
+	  <option data-img="{{ url_for('static', filename='images/Sparkle.jpeg') }}"value="Sparkle"{% if state=="Sparkle" %} selected {% endif %}>Sparkle</option>
+	  <option data-img="{{ url_for('static', filename='images/comet.jpeg') }}"value="DrawComet"{% if state=="DrawComet" %} selected {% endif %}>DrawComet</option>
+	  <option data-img="{{ url_for('static', filename='images/twinkle.jpeg') }}"value="Twinkle"{% if state=="Twinkle" %} selected {% endif %}>Twinkle</option>
+	  <option data-img="{{ url_for('static', filename='images/twinkle.jpeg') }}"value="TwinkleRandom"{% if state=="TwinkleRandom" %} selected {% endif %}>TwinkleRandom</option>
+	  <option data-img="{{ url_for('static', filename='images/Sparkle.jpeg') }}"value="NewKITT"{% if state=="NewKITT" %} selected {% endif %}>NewKITT</option>
+	  <option data-img="{{ url_for('static', filename='images/NewKITT.jpeg') }}"value="RunningLights"{% if state=="RunningLights" %} selected {% endif %}>RunningLights</option>
+	  <option value="theaterChase"{% if state=="theaterChase" %} selected {% endif %}>theaterChase</option>
+	  <option value="theaterChaseRainbow"{% if state=="theaterChaseRainbow" %} selected {% endif %}>theaterChaseRainbow</option>
+	  <option value="FadeInOut"{% if state=="FadeInOut" %} selected {% endif %}>FadeInOut</option>
+	  <option data-img="{{ url_for('static', filename='images/Strobe.jpeg') }}"value="Strobe"{% if state=="Strobe" %} selected {% endif %}>Strobe</option>
+	  <option data-img="{{ url_for('static', filename='images/helloween.jpeg') }}"value="HalloweenEyes"{% if state=="HalloweenEyes" %} selected {% endif %}>HalloweenEyes</option>
+	  <option value="CylonBounce"{% if state=="CylonBounce" %} selected {% endif %}>CylonBounce</option>
+	  <option data-img="{{ url_for('static', filename='images/rainbowCycle.jpeg') }}"value="rainbowCycle"{% if state=="rainbowCycle" %} selected {% endif %}>rainbowCycle</option>
+	  <option value="BouncingBalls"{% if state=="BouncingBalls" %} selected {% endif %}>BouncingBalls</option>
+	  <option value="colorWipe"{% if state=="colorWipe" %} selected {% endif %}>colorWipe</option>
+	  <option value="rainbow"{% if state=="rainbow" %} selected {% endif %}>rainbow</option>
+	</select>
+        <div class="colorPicker" onmouseup="test()" onpointerup="test()"></div>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/bvselect.js') }}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
+	<script type="text/javascript">
+	// create color picker in display range.
+	var colorPicker = new iro.ColorPicker(".colorPicker", {
+	  width: 360,
+	  color: "{{ kleuren }}",
+	  borderWidth: 1,
+	  borderColor: "#fff",
+	});
+	var values = document.getElementById("values");
+	// read color value
+	colorPicker.on(["color:init", "color:change"], function(color){
+	  $.post("/ditiskleur", {
+	    javascript_data: color.rgbString
+	  });           
+	});
+	function test()
+	  {
+	    var selectedvalue = document.getElementById("selectbox").value;
+	    console.log(selectedvalue);
+	    $.post("/colorize", {
+	      test: selectedvalue
+	    }); 
+	  }
+
+	  document.addEventListener("DOMContentLoaded", function() {
+	    var demo1 = new BVSelect({
+	      selector: "#selectbox",
+	      searchbox: true,
+	      offset: true,
+	      width: "100px",
+	      breakpoint: 800
+	    });
+	});
+	</script>
+	<nav class="nav" id="power">
+            <a href="power" class="nav__link">
+                <i class="material-icons nav__icon">power_settings_new</i>
+                <span class="nav__text">power</span>
+            </a>
+            <a href="colorize" class="nav__link active">
+                <i class="material-icons nav__icon">colorize</i>
+                <span class="nav__text">colorize</span>
+            </a>
+            <a href="#" class="nav__link">
+               <i class="material-icons nav__icon">devices</i>
+               <span class="nav__text">Devices</span>
+            </a>
+            <a href="alarm" class="nav__link">
+                <i class="material-icons nav__icon">alarm</i>
+                <span class="nav__text">alarm</span>
+            </a>
+            <a href="Sunset" class="nav__link">
+                <i class="material-icons nav__icon">wb_sunny</i>
+                <span class="nav__text">Sunset</span>
+            </a>
+        </nav>
+  {% endblock %}
+
+ 

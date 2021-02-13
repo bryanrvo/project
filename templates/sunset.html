@@ -1,0 +1,29 @@
+{% extends "Template.html" %}
+    {% block content %}
+    <H3 class="test"> {{ sunset }}
+    </H3>
+    
+        <nav class="nav" id="fiets">
+            <a href="power" class="nav__link">
+                <i class="material-icons nav__icon">power_settings_new</i>
+                <span class="nav__text">power</span>
+            </a>
+            <a href="colorize" class="nav__link">
+                <i class="material-icons nav__icon">colorize</i>
+                <span class="nav__text">colorize</span>
+            </a>
+            <a href="#" class="nav__link">
+               <i class="material-icons nav__icon">devices</i>
+               <span class="nav__text">Devices</span>
+            </a>
+            <a href="alarm" class="nav__link">
+                <i class="material-icons nav__icon">alarm</i>
+                <span class="nav__text">alarm</span>
+            </a>
+            <a href="Sunset" class="nav__link active">
+                <i class="material-icons nav__icon">wb_sunny</i>
+                <span class="nav__text">Sunset</span>
+            </a>
+        </nav>
+    {% endblock %}
+ 
