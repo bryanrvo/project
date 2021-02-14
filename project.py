@@ -153,7 +153,6 @@ def callback(pin):
     global strip
     global r , g, b
     global hue, huestate
-    print("hier")
     if sensorValue == "checked":
         if led_stripValue == "":
             led_stripValue = "checked"
