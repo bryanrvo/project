@@ -226,8 +226,8 @@ def power():
             stoppen(1)
             led_stripValue = ""
         if ambilight == 'ambilight' and ambilightValue == "":
-            ambilightValue = "checked"
             tn = connect('192.168.68.74', '3636')
+            ambilightValue = "checked"
         elif ambilight == None and ambilightValue == "checked":
             ambilightValue = ""
             disconnect(tn)
