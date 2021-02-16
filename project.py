@@ -90,6 +90,7 @@ def aansturing(self):
                 rainbow(strip)
         elif sensorValue == "checked":
             if state == "":
+                print(tn)
                 setColor(tn, r, g, b)
 
         else:
