@@ -10,7 +10,7 @@ def connect(ip, port=3636):
     except:
         return False
         
-def setColor(red, green, blue=, num=206):
+def setColor(red, green, blue, num=110):
     payload = 'setcolor:'
     red = str(red)
     green = str(green)
@@ -26,7 +26,7 @@ def setProfile(profile):
     tn.write(payload.encode())
     tn.write(b'\n\r')
 
-def disconnect(num=206):
+def disconnect(num=110):
     payload = 'setcolor:'
     for i in range(1, num):
         payload += str(i) + '-000,000,000;'
