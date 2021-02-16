@@ -227,6 +227,7 @@ def power():
             led_stripValue = ""
         if ambilight == 'ambilight' and ambilightValue == "":
             tn = connect('192.168.68.74', '3636')
+            time.sleep(8)
             ambilightValue = "checked"
         elif ambilight == None and ambilightValue == "checked":
             ambilightValue = ""
