@@ -86,8 +86,6 @@ def aansturing(self):
                 colorWipe(strip, Color(r,g,b))
             elif state == "rainbow":
                 rainbow(strip)
-            elif state == "":
-                setColor(r,g,b)
         else:
             vullen(strip, Color(0,0,0))
 
