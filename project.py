@@ -10,6 +10,7 @@ import datetime
 from rpi_ws281x import *
 from templates.python.strandtesttesten import *
 from templates.python.Sun import main
+from templates.python.Telnet import *
 import threading
 import platform
 import os
@@ -85,6 +86,8 @@ def aansturing(self):
                 colorWipe(strip, Color(r,g,b))
             elif state == "rainbow":
                 rainbow(strip)
+            elif state == ""
+                setColor(r,g,b)
         else:
             vullen(strip, Color(0,0,0))
 
@@ -216,8 +219,10 @@ def power():
             led_stripValue = ""
         if ambilight == 'ambilight' and ambilightValue == "":
             ambilightValue = "checked"
+            connect('192.168.68.74', '3636')
         elif ambilight == None and ambilightValue == "checked":
             ambilightValue = ""
+            disconnect()
         if sensor == 'sensor' and sensorValue == "":
             sensorValue = "checked"
         elif sensor == None and sensorValue == "checked":

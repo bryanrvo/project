@@ -10,15 +10,18 @@ def connect(ip, port=3636):
     except:
         return False
         
-def setColor(red='255', green='0', blue='100', num=206):
+def setColor(red, green, blue=, num=206):
     payload = 'setcolor:'
+    red = str(red)
+    green = str(green)
+    blue = str(blue)
     for i in range(1, num):
         payload += str(i) + '-' + red + ',' + green + ',' + blue + ';'
     tn.write(payload.encode())
     tn.write(b'\n\r')
 
 def setProfile(profile):
-    payload = 'setcolor:' + profile
+    payload = 'setprofile:' + profile
     time.sleep(1)
     tn.write(payload.encode())
     tn.write(b'\n\r')
