@@ -90,10 +90,9 @@ def aansturing(self):
                 rainbow(strip)
         else:
             vullen(strip, Color(0,0,0))
- 
+        print(tn)
         if ambilightValue == "checked":
             if state == "":
-                print(tn)
                 setColor(tn, r, g, b)
 
         
