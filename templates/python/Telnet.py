@@ -9,7 +9,7 @@ def connect(ip, port=3636):
     except:
         return False
         
-def setColor(red, green, blue, num=110):
+def setColor(tn, red, green, blue, num=110):
     payload = 'setcolor:'
     red = str(red)
     green = str(green)
