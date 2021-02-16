@@ -5,11 +5,11 @@ def connect(ip, port=3636):
         tn = telnetlib.Telnet(ip, port, 3600)
         tn.read_until(b'')
         tn.write(b'lock\n')
-        return True, tn
+        return tn
     except:
         return False
         
-def setColor(tn, red, green, blue, num=110):
+def setColor(red, green, blue, num=110):
     payload = 'setcolor:'
     red = str(red)
     green = str(green)
