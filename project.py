@@ -88,9 +88,9 @@ def aansturing(self):
                 colorWipe(strip, Color(r,g,b))
             elif state == "rainbow":
                 rainbow(strip)
-        #if ambilightValue == "checked":
-            #if state == "":
-                #print(tn)
+        if ambilightValue == "checked":
+            if state == "":
+                print(tn)
                 #setColor(tn, r, g, b)
 
         else:
