@@ -2,15 +2,14 @@ import telnetlib
 import time
 def connect(ip, port=3636):
     try:
-        global tn
         tn = telnetlib.Telnet(ip, port, 3600)
         tn.read_until(b'')
         tn.write(b'lock\n')
-        return True
+        return True, tn
     except:
         return False
         
-def setColor(red, green, blue, num=110):
+def setColor(tn, red, green, blue, num=110):
     payload = 'setcolor:'
     red = str(red)
     green = str(green)
@@ -20,13 +19,13 @@ def setColor(red, green, blue, num=110):
     tn.write(payload.encode())
     tn.write(b'\n\r')
 
-def setProfile(profile):
+def setProfile(tn, profile):
     payload = 'setprofile:' + profile
     time.sleep(1)
     tn.write(payload.encode())
     tn.write(b'\n\r')
 
-def disconnect(num=110):
+def disconnect(tn, num=110):
     payload = 'setcolor:'
     for i in range(1, num):
         payload += str(i) + '-000,000,000;'
@@ -37,7 +36,7 @@ def disconnect(num=110):
     tn.write(b'exit\n')
     tn.close()
 
-def ping():
+def ping(tn):
     try:
         tn.write(b'\r\ngetstatusapi\n\r')
         return True

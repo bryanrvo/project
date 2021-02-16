@@ -16,6 +16,7 @@ import platform
 import os
 import sys
 
+tn = ""
 hue = Bridge('192.168.68.50')
 hue.connect()
 huestate = True
@@ -42,6 +43,7 @@ def aansturing(self):
     global r,g,b
     global state
     global strip, strip2
+    global tn
     while True:
         if led_stripValue == "checked":
             if state == "vullen":
@@ -86,6 +88,9 @@ def aansturing(self):
                 colorWipe(strip, Color(r,g,b))
             elif state == "rainbow":
                 rainbow(strip)
+            elif state == "":
+                setColor(tn, r, g, b)
+
         else:
             vullen(strip, Color(0,0,0))
 
@@ -194,6 +199,7 @@ def power():
     global r , g, b
     global state
     global hue, huestate
+    global tn
     if request.method == 'POST':
         led_strip = request.form.get('led_strip')
         ambilight = request.form.get('ambilight')
@@ -217,10 +223,10 @@ def power():
             led_stripValue = ""
         if ambilight == 'ambilight' and ambilightValue == "":
             ambilightValue = "checked"
-            connect('192.168.68.74', '3636')
+            tn = connect('192.168.68.74', '3636')
         elif ambilight == None and ambilightValue == "checked":
             ambilightValue = ""
-            disconnect()
+            disconnect(tn)
         if sensor == 'sensor' and sensorValue == "":
             sensorValue = "checked"
         elif sensor == None and sensorValue == "checked":
