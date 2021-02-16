@@ -39,7 +39,7 @@ newstate = ""
 r, g, b = 0, 0, 0
 
 def aansturing(self):
-    global led_stripValue, sensorValue
+    global led_stripValue, ambilightValue
     global r,g,b
     global state
     global strip, strip2
@@ -88,7 +88,7 @@ def aansturing(self):
                 colorWipe(strip, Color(r,g,b))
             elif state == "rainbow":
                 rainbow(strip)
-        if sensorValue == "checked":
+        if ambilightValue == "checked":
             if state == "":
                 print(tn)
                 setColor(tn, r, g, b)
