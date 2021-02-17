@@ -1,8 +1,11 @@
-from templates.python.Telnet import *
 
-if not ambibox.ping():
-    connect('192.168.68.74', '3636'):
-    time.sleep(3000)
-    setColor(lastColor.split(',')[0], lastColor.split(',')[1], lastColor.split(',')[2])
-    time.sleep(3000)
-    disconnect()
+import os
+import time
+
+def measure_temp():
+        temp = os.popen("vcgencmd measure_temp").readline()
+        return (temp.replace("temp=",""))
+
+while True:
+        print(measure_temp())
+        time.sleep(1)
