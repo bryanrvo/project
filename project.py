@@ -16,6 +16,7 @@ import platform
 import os
 import sys
 
+start_time = datetime.datetime.now()
 tn = ""
 hue = Bridge('192.168.68.50')
 hue.connect()
@@ -43,7 +44,7 @@ def aansturing(self):
     global r,g,b
     global state
     global strip, strip2
-    global tn
+    global tn, start_time
     while True:
         if led_stripValue == "checked":
             if state == "vullen":
@@ -91,14 +92,13 @@ def aansturing(self):
         else:
             vullen(strip, Color(0,0,0))
         if ambilightValue == "checked":
-            print(tn)
             if state == "":
-                start_time = datetime.datetime.now()
                 end_time = datetime.datetime.now()
                 time_diff = (end_time - start_time)
                 execution_time = time_diff.total_seconds() * 1000
                 if  execution_time > 3000:
                     setColor(tn, r, g, b)
+                    start_time = datetime.datetime.now()
 
         
 
