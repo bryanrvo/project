@@ -251,7 +251,9 @@ def sw():
 @app.route("/Sunset", methods=["POST", "GET"])
 def Sunset():
     global sunset
-    return render_template('sunset.html', sunset = sunset)
+    temp = os.popen("vcgencmd measure_temp").readline()
+    CPUtemp = temp.replace("temp=","")
+    return render_template('sunset.html', sunset = sunset, CPUtemp = CPUtemp)
 
 @app.route("/colorize", methods=["POST", "GET"])
 def colorize():
