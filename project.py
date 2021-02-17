@@ -46,7 +46,7 @@ def aansturing(self):
     global strip, strip2
     global tn, start_time
     while True:
-        print("test")
+        #print("test")
         if led_stripValue == "checked":
             if state == "vullen":
                 vullen(strip, Color(r,g,b))
@@ -255,7 +255,7 @@ def Sunset():
     if request.method == 'POST':
         if request.form['submit_button'] == 'Do Something':
             print("gaat nu gebeuren")
-            os.systen("git pull")
+            os.system("git pull")
             time.sleep(10)
             os.execv(sys.executable, ["sudo python3"] + sys.argv)
     temp = os.popen("vcgencmd measure_temp").readline()
