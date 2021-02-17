@@ -46,7 +46,6 @@ def aansturing(self):
     global strip, strip2
     global tn, start_time
     while True:
-        print("test")
         if led_stripValue == "checked":
             if state == "vullen":
                 vullen(strip, Color(r,g,b))
