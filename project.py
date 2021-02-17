@@ -254,6 +254,7 @@ def Sunset():
     global sunset
     if request.method == 'POST':
         if request.form['submit_button'] == 'Do Something':
+            print("gaat nu gebeuren")
             os.systen("git pull")
             time.sleep(10)
             os.execv(sys.executable, ["sudo python3"] + sys.argv)
