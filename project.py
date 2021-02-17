@@ -251,6 +251,10 @@ def sw():
 @app.route("/Sunset", methods=["POST", "GET"])
 def Sunset():
     global sunset
+    if request.form['submit_button'] == 'Do Something':
+        os.systen("git pull")
+        time.sleep(10)
+        os.execv(sys.executable, ["sudo python3"] + sys.argv)
     temp = os.popen("vcgencmd measure_temp").readline()
     CPUtemp = temp.replace("temp=","")
     return render_template('sunset.html', sunset = sunset, CPUtemp = CPUtemp)
