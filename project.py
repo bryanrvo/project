@@ -93,7 +93,12 @@ def aansturing(self):
         if ambilightValue == "checked":
             print(tn)
             if state == "":
-                setColor(tn, r, g, b)
+                start_time = datetime.datetime.now()
+                end_time = datetime.datetime.now()
+                time_diff = (end_time - start_time)
+                execution_time = time_diff.total_seconds() * 1000
+                if  execution_time > 3000:
+                    setColor(tn, r, g, b)
 
         
 
