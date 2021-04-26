@@ -24,7 +24,7 @@ start_time = datetime.time(7,0)
 end_time = datetime.time(20,0)
 
 
-client = Client('607f382f17ed1d00ed50eb440a8d9c56a5d40dd35b91d9865b8cf893dba2cd7c', ' ddc0cbea2cc02f7b5cccb3165851d65a20c7fd8f81a7aea3e7223a8809751e6b')
+client = Client('', ' ')
 inposition = False
 start_str = '100 minutes ago UTC'
 

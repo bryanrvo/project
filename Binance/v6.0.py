@@ -1,5 +1,5 @@
-api_key = 'gfnNi5R5KIYmj4XxToXWBVqzrI8tKpAIo97rRcq4EYs2zHN5FdQVwcRgQTzf4yr2'
-api_secret = '4NzK1YO82qIdFC1YeivkQ04obL8kX1kLlHozHnZUrtvb90aTKHfGNYzZ1oLuoO0B'
+api_key = ''
+api_secret = ''
 
 from binance.client import Client
 import datetime as dt
