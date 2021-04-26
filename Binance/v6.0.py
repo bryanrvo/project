@@ -15,6 +15,7 @@ from decimal import Decimal
 chat = 1702054190
 text = 'start'
 telegramtest.send_message(text, chat)
+print("VERWIJDER MIJ")
 
 
 
