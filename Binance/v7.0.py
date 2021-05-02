@@ -2,6 +2,7 @@ api_key = ''
 api_secret = ''
 
 from binance.client import Client
+import pandas as pd
 import datetime as dt
 import time as tm
 import numpy as np
@@ -9,7 +10,11 @@ import requests
 import talib
 import datetime
 import telegramtest
+from binance.exceptions import BinanceAPIException
 from decimal import Decimal
+from ta.volatility import BollingerBands
+from ta.momentum import StochasticOscillator
+from ta.trend import PSARIndicator
 
 # text, chat = telegramtest.get_last_chat_id_and_text(telegramtest.get_updates())
 chat = 1702054190
@@ -18,7 +23,7 @@ telegramtest.send_message(text, chat)
 
 client = Client(api_key, api_secret)
 inposition = False
-start_str = '100 minutes ago UTC'
+start_str = '140 minutes ago UTC'
 
 symbols = ['ZRXBTC','ZILBTC','ZENBTC','ZECBTC','YOYOBTC','YFIIBTC','YFIBTC','XVSBTC','XVGBTC','XTZBTC','XRPBTC','XMRBTC','XLMBTC','XEMBTC','WTCBTC','WRXBTC','WPRBTC','WNXMBTC','WINGBTC','WBTCBTC','WAVESBTC','WANBTC','WABIBTC','VITEBTC','VIDTBTC','VIBBTC','VIABTC','VETBTC','UTKBTC','UNIBTC','UNFIBTC','TWTBTC','TVKBTC','TRXBTC','TRUBTC','TROYBTC','TRBBTC','TOMOBTC','THETABTC','TFUELBTC','TCTBTC','SYSBTC','SXPBTC','SUSHIBTC','SUSDBTC','SUNBTC','STXBTC','STRAXBTC','STPTBTC','STORJBTC','STMXBTC','STEEMBTC','SRMBTC','SOLBTC','SNXBTC','SNTBTC','SNMBTC','SNGLSBTC','SKYBTC','SKLBTC','SFPBTC','SCRTBTC','SCBTC','SANDBTC','RVNBTC','RUNEBTC','RSRBTC','ROSEBTC','RLCBTC','RIFBTC','REQBTC','REPBTC','RENBTCBTC','RENBTC','REEFBTC','RDNBTC','RCNBTC','RAMPBTC','QTUMBTC','QSPBTC','QLCBTC','QKCBTC','PSGBTC','PPTBTC','POWRBTC','PONDBTC','POLYBTC','POABTC','PNTBTC','PIVXBTC','PHBBTC','PHABTC','PERPBTC','PERLBTC','PAXGBTC','OXTBTC','OSTBTC','ORNBTC','ONTBTC','ONGBTC','ONEBTC','OMGBTC','OMBTC','OGNBTC','OGBTC','OCEANBTC','OAXBTC','NXSBTC','NULSBTC','NMRBTC','NKNBTC','NEOBTC','NEBLBTC','NEARBTC','NBSBTC','NAVBTC','NASBTC','NANOBTC','MTLBTC','MTHBTC','MKRBTC','MITHBTC','MDTBTC','MDABTC','MATICBTC','MANABTC','LUNABTC','LTOBTC','LTCBTC','LSKBTC','LRCBTC','LOOMBTC','LITBTC','LINKBTC','LINABTC','KSMBTC','KNCBTC','KMDBTC','KAVABTC','JUVBTC','JSTBTC','IRISBTC','IOTXBTC','IOTABTC','IOSTBTC','INJBTC','IDEXBTC','ICXBTC','HNTBTC','HIVEBTC','HBARBTC','HARDBTC','GXSBTC','GVTBTC','GTOBTC','GRTBTC','GRSBTC','GOBTC','GLMBTC','GASBTC','FXSBTC','FUNBTC','FTTBTC','FTMBTC','FRONTBTC','FORBTC','FLMBTC','FISBTC','FIROBTC','FIOBTC','FILBTC','FETBTC','EVXBTC','ETHBTC','ETCBTC','EOSBTC','ENJBTC','ELFBTC','EGLDBTC','EASYBTC','DUSKBTC','DREPBTC','DOTBTC','DOGEBTC','DODOBTC','DOCKBTC','DNTBTC','DLTBTC','DIABTC','DGBBTC','DEGOBTC','DCRBTC','DATABTC','DASHBTC','CVCBTC','CTXCBTC','CTSIBTC','CTKBTC','CRVBTC','COTIBTC','COSBTC','COMPBTC','CNDBTC','CKBBTC','CHZBTC','CHRBTC','CELRBTC','CELOBTC','CDTBTC','CAKEBTC','BZRXBTC','BTSBTC','BTGBTC','BTCSTBTC','BRDBTC','BQXBTC','BNTBTC','BLZBTC','BELBTC','BEAMBTC','BCHBTC','BCDBTC','BATBTC','BANDBTC','BALBTC','BADGERBTC','AXSBTC','AVAXBTC','AVABTC','AUDIOBTC','AUCTIONBTC','ATOMBTC','ATMBTC','ASTBTC','ASRBTC','ARPABTC','ARKBTC','ARDRBTC','APPCBTC','ANTBTC','ANKRBTC','AMBBTC','ALPHABTC','ALICEBTC','ALGOBTC','AKROBTC','AIONBTC','AGIBTC','AERGOBTC','ADXBTC','ADABTC','ACMBTC','AAVEBTC','1INCHBTC']
 times = ['1m', '3m', '5m']
@@ -52,9 +57,8 @@ def klinesinfo(symbol, start_str, time, lendele):
         low = np.delete(low, len(low)-1,0)
         close = np.delete(close, len(close)-1,0)
         volume = np.delete(volume, len(volume)-1,0)
-    return high, low, close, volume
-
-from binance.exceptions import BinanceAPIException, BinanceWithdrawException
+        del klines[-1]
+    return klines, high, low, close, volume
 
 def buyfunc(symbol, hoeveelheid, orderprijs):
     order = client.order_limit_buy(symbol=symbol,quantity=hoeveelheid,price=orderprijs)
@@ -158,6 +162,50 @@ def firstbuyfunc(symbol, time, priceNow, close):
     inposition, totalpaidfirsttrade = buyfunc(symbol, hoeveelheid, orderprijs)
     return inposition, orderprijs, breakeven, totalpaidfirsttrade, minimum
 
+def binanceDataFrame(klines):
+    df = pd.DataFrame(klines,dtype=float, columns = ('Open Time',
+                                                                    'Open',
+                                                                    'High',
+                                                                    'Low',
+                                                                    'Close',
+                                                                    'Volume',
+                                                                    'Close time',
+                                                                    'Quote asset volume',
+                                                                    'Number of trades',
+                                                                    'Taker buy base asset volume',
+                                                                    'Taker buy quote asset volume',
+                                                                    'Ignore'))
+
+    df['Open Time'] = pd.to_datetime(df['Open Time'], unit='ms')
+    return df
+
+def BBANDS(klines):
+    df = binanceDataFrame(klines)
+    indicator_bb = BollingerBands(df["Close"])
+    df['bb_bbh'] = indicator_bb.bollinger_hband()
+    df['bb_bbm'] = indicator_bb.bollinger_mavg()
+    df['bb_bbl'] = indicator_bb.bollinger_lband()
+    upper = np.asarray(df['bb_bbh'])
+    middle = np.asarray(df['bb_bbm'])
+    lower = np.asarray(df['bb_bbl'])
+    return upper, middle, lower
+
+def STOCH(klines):
+    df = binanceDataFrame(klines)
+    Stocha = StochasticOscillator(close=df["Close"],high=df["High"],low=df["Low"])
+    slowk = Stocha.stoch_signal()
+    slowd = slowk.rolling(3).mean()
+    slowk = np.asarray(slowk)
+    slowd = np.asarray(slowd)
+    return slowk, slowd
+
+def SAR(klines):
+    df = binanceDataFrame(klines)
+    sarpoint = PSARIndicator(close=df["Close"],high=df["High"],low=df["Low"])
+    psar = sarpoint.psar()
+    psar = np.asarray(psar)
+    return psar
+
 
 while True:
     nutijd = datetime.datetime.now()
@@ -177,11 +225,12 @@ while True:
             for time in times:
                 priceNow, volume = lastpricefunc(symbol)
                 if priceNow > 0.0000500 and volume > 150:
-                    high, low, close, volume = klinesinfo(symbol, start_str, time, True)
+                    klines, high, low, close, volume = klinesinfo(symbol, start_str, time, True)
                     volume = volume[-10:]
                     lastcloseprice = close[-1]
-                    slowk, slowd = talib.STOCH(high, low, close, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0)
-                    upper, middle, lower = talib.BBANDS(close, 20, 2, 2)
+                    slowk, slowd = STOCH(klines)
+                    upper, middle, lower = BBANDS(klines)
+                    print(lower[-1], symbol, time)
                     last_upper = upper[-1]
                     last_lower = lower[-1]
                     last_slowk = slowk[-1]
@@ -226,8 +275,8 @@ while True:
                                         ################################
                                         sellclientOrderId = order['orderId']
                                         tm.sleep(60)
-                                    high, low, close, volume = klinesinfo(symbol, start_str, time, False)
-                                    upper, middle, lower = talib.BBANDS(close, 20, 2, 2)
+                                    klines, high, low, close, volume = klinesinfo(symbol, start_str, time, False)
+                                    upper, middle, lower = BBANDS(klines)
                                     last_lower = lower[-1]
                                     price = str(round(orderprijs - ((middle[-1] - last_lower) * 0.99), len(str(priceNow)) -2))
                                     order = client.order_limit_buy(symbol=symbol, quantity=symbolbalace, price=price)
@@ -238,7 +287,7 @@ while True:
                                     tm.sleep(60)
                                     while inposition == True:
                                         priceNow, volume = lastpricefunc(symbol)
-                                        high, low, close, volume = klinesinfo(symbol, start_str, time, True)
+                                        klines, high, low, close, volume = klinesinfo(symbol, start_str, time, True)
                                         lastclosePrice = close[-1]
                                         end_time = datetime.datetime.now()
                                         time_diff = (end_time - start_time)
@@ -273,8 +322,8 @@ while True:
                                                 inposition = False
                                                 ##############
                                                 while inposition == True:
-                                                    high, low, close, volume = klinesinfo(symbol, start_str, time, True)
-                                                    upper, middle, lower = talib.BBANDS(close, 20, 2, 2)
+                                                    klines, high, low, close, volume = klinesinfo(symbol, start_str, time, True)
+                                                    upper, middle, lower = BBANDS(klines)
                                                     symbolbalace = client.get_asset_balance(asset=singlesymbol)
                                                     symbolbalace = float(symbolbalace['free'])
                                                     symbolbalace = float(round(symbolbalace, len(str(minimum)) -2))
@@ -298,8 +347,8 @@ while True:
                                                         order = client.create_order(symbol=symbol, side=client.SIDE_BUY, type=client.ORDER_TYPE_STOP_LOSS_LIMIT, quantity=symbolbalace, stopPrice=stopprice, price=price)
                                                         clientOrderId = order['orderId']
                                                         while inposition == True:
-                                                            high, low, close, volume = klinesinfo(symbol, start_str, time, True)
-                                                            upper, middle, lower = talib.BBANDS(close, 20, 2, 2)
+                                                            klines, high, low, close, volume = klinesinfo(symbol, start_str, time, True)
+                                                            upper, middle, lower = BBANDS(klines)
                                                             orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
                                                             orderstatus = orderstatus['status']
                                                             priceNow, volume = lastpricefunc(symbol)
@@ -325,8 +374,8 @@ while True:
                                             while inposition == True:
                                                 priceNow, volume = lastpricefunc(symbol)
                                                 start_str1 = '180 minutes ago UTC'
-                                                high, low, close, volume = klinesinfo(symbol, start_str1, time, False)
-                                                sarpoint = talib.SAR(high, low, acceleration=0.02, maximum=0.2)
+                                                klines, high, low, close, volume = klinesinfo(symbol, start_str1, time, False)
+                                                sarpoint = SAR(klines)
                                                 if sarpoint[-1] < breakeven and sarpoint[-1] > priceNow:
                                                     oldsar = sarpoint[-1]
                                                     #PLACE STOP LIMIT BUY op de SAR door sar -2
@@ -364,9 +413,9 @@ while True:
                                                     while inposition == True:
                                                         start_str1 = '180 minutes ago UTC'
                                                         priceNow, volume = lastpricefunc(symbol)
-                                                        high, low, close, volume = klinesinfo(symbol, start_str1, time, False)
-                                                        sarpoint = talib.SAR(high, low, acceleration=0.02, maximum=0.2)
-                                                        upper, middle, lower = talib.BBANDS(close, 20, 2, 2)
+                                                        klines, high, low, close, volume = klinesinfo(symbol, start_str1, time, False)
+                                                        sarpoint = SAR(klines)
+                                                        upper, middle, lower = BBANDS(klines)
                                                         orderstatus = ""
                                                         while orderstatus == "":
                                                             try:
