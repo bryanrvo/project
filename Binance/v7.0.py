@@ -111,12 +111,26 @@ def buyfunc(symbol, hoeveelheid, orderprijs):
                 return False, 0 
             elif orderstatus == "PARTIALLY_FILLED" and execution_time > tijd:
                 inposition = True
-                orderstatus = client.get_order(symbol=symbol,orderId=clientOrderId)
+                orderstatus = ""
+                while orderstatus == "":
+                    try:
+                        orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
+                        orderstatus = orderstatus['status']
+                    except BinanceAPIException as e:
+                        print(e)
+                        tm.sleep(10)
                 hoeveelheidintrade = float(orderstatus['executedQty'])
                 totalpaidfirsttrade =  hoeveelheidintrade * priceNow
     if orderstatus == "FILLED":
         inposition = True
-        orderstatus = client.get_order(symbol=symbol,orderId=clientOrderId)
+        orderstatus = ""
+        while orderstatus == "":
+            try:
+                orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
+                orderstatus = orderstatus['status']
+            except BinanceAPIException as e:
+                print(e)
+                tm.sleep(10)
         hoeveelheidintrade = float(orderstatus['executedQty'])
         totalpaidfirsttrade =  hoeveelheidintrade * priceNow
     return inposition, totalpaidfirsttrade 
@@ -335,8 +349,14 @@ while True:
                                                     order = client.create_order(symbol=symbol, side=client.SIDE_BUY, type=client.ORDER_TYPE_STOP_LOSS_LIMIT, quantity=symbolbalace, stopPrice=stopprice, price=price)
                                                     clientOrderId = order['orderId']
                                                     tm.sleep(60)
-                                                    orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
-                                                    orderstatus = orderstatus['status']
+                                                    orderstatus = ""
+                                                    while orderstatus == "":
+                                                        try:
+                                                            orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
+                                                            orderstatus = orderstatus['status']
+                                                        except BinanceAPIException as e:
+                                                            print(e)
+                                                            tm.sleep(10)
                                                     if close[-1] > middle[-1] and orderstatus != "FILLED":
                                                         #STOP LOSE ONDER BB MIDDELSTE LIJN
                                                         stopprice = round(middle[-1] * 0.9985, len(str(priceNow)) -2)
@@ -349,8 +369,14 @@ while True:
                                                         while inposition == True:
                                                             klines, high, low, close, volume = klinesinfo(symbol, start_str, time, True)
                                                             upper, middle, lower = BBANDS(klines)
-                                                            orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
-                                                            orderstatus = orderstatus['status']
+                                                            orderstatus = ""
+                                                            while orderstatus == "":
+                                                                try:
+                                                                    orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
+                                                                    orderstatus = orderstatus['status']
+                                                                except BinanceAPIException as e:
+                                                                    print(e)
+                                                                    tm.sleep(10)
                                                             priceNow, volume = lastpricefunc(symbol)
                                                             if orderstatus!= "FILLED" and orderstatus!= "PARTIALLY_FILLED" and close[-1] > close [-2] and  close[-1] > middle[-1]:
                                                                 result = client.cancel_order(symbol=symbol,orderId=clientOrderId)
@@ -587,11 +613,23 @@ while True:
                                             order = client.order_limit_sell(symbol=symbol, quantity=symbolbalace, price=priceNow)
                                             clientOrderId = order['orderId']
                                             tm.sleep(60)
-                                            orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
-                                            orderstatus = orderstatus['status']
+                                            orderstatus = ""
+                                            while orderstatus == "":
+                                                try:
+                                                    orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
+                                                    orderstatus = orderstatus['status']
+                                                except BinanceAPIException as e:
+                                                    print(e)
+                                                    tm.sleep(10)
                                             while orderstatus != "FILLED":
-                                                orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
-                                                orderstatus = orderstatus['status']
+                                                orderstatus = ""
+                                                while orderstatus == "":
+                                                    try:
+                                                        orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
+                                                        orderstatus = orderstatus['status']
+                                                    except BinanceAPIException as e:
+                                                        print(e)
+                                                        tm.sleep(10)
                                             result = client.cancel_order(symbol=symbol,orderId=sellclientOrderId)
                                             result = client.cancel_order(symbol=symbol,orderId=orderclientOrderId)
                                             inposition = False
