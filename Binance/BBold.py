@@ -10,25 +10,69 @@ from decimal import Decimal
 import numpy as np
 import talib
 
-start_str = '100 minutes ago UTC'
 
-klines = client.get_historical_klines(symbol='BTCEUR', start_str=start_str , interval='1m')
-opent = [float(entry[1]) for entry in klines]
-high = [float(entry[2]) for entry in klines]
-low = [float(entry[3]) for entry in klines]
-close = [float(entry[4]) for entry in klines]
-volume = [float(entry[5]) for entry in klines]
-high = np.asarray(high)
-low = np.asarray(low)
-close = np.asarray(close)
-volume = np.asarray(volume)
-marketprices = 'https://api.binance.com/api/v3/ticker/24hr?symbol=' + symbol
-res = requests.get(marketprices)
-data = res.json()
-volume = float(data['quoteVolume'])
-priceNow = float(data['lastPrice'])
-print(opent[-1])
-print(priceNow)
+def lastpricefunc(symbol):
+    marketprices = 'https://api.binance.com/api/v3/ticker/24hr?symbol=' + symbol
+    res = requests.get(marketprices)
+    data = res.json()
+    volume = float(data['quoteVolume'])
+    priceNow = float(data['lastPrice'])
+    return priceNow, volume
+
+def klinesinfo(symbol, start_str, time, lendele):
+    klines = client.get_historical_klines(symbol=symbol, start_str=start_str , interval=time)
+    high = [float(entry[2]) for entry in klines]
+    low = [float(entry[3]) for entry in klines]
+    close = [float(entry[4]) for entry in klines]
+    volume = [float(entry[5]) for entry in klines]
+    high = np.asarray(high)
+    low = np.asarray(low)
+    close = np.asarray(close)
+    volume = np.asarray(volume)
+    if lendele == True:
+        high = np.delete(high, len(high)-1,0)
+        low = np.delete(low, len(low)-1,0)
+        close = np.delete(close, len(close)-1,0)
+        volume = np.delete(volume, len(volume)-1,0)
+    return high, low, close, volume
+
+def positiefbm():
+    klines = client.get_historical_klines(symbol='BTCEUR', start_str='240 minutes ago UTC', interval='1m')
+    opent = [float(entry[1]) for entry in klines]
+    opent = np.asarray(opent)
+    priceNow, volume = lastpricefunc('BTCEUR')
+    if priceNow > opent[1]:
+        klines = client.get_historical_klines(symbol='BTCEUR', start_str='60 minutes ago UTC', interval='1m')
+        opent = [float(entry[1]) for entry in klines]
+        opent = np.asarray(opent)
+        priceNow, volume = lastpricefunc('BTCEUR')
+        if priceNow > opent[1] * 1.001:
+            return True:
+    return False
+
+while True:
+    test = positiefbm()
+    print(test)
+
+# start_str = '100 minutes ago UTC'
+
+# klines = client.get_historical_klines(symbol='BTCEUR', start_str=start_str , interval='1m')
+# opent = [float(entry[1]) for entry in klines]
+# high = [float(entry[2]) for entry in klines]
+# low = [float(entry[3]) for entry in klines]
+# close = [float(entry[4]) for entry in klines]
+# volume = [float(entry[5]) for entry in klines]
+# high = np.asarray(high)
+# low = np.asarray(low)
+# close = np.asarray(close)
+# volume = np.asarray(volume)
+# marketprices = 'https://api.binance.com/api/v3/ticker/24hr?symbol=' + symbol
+# res = requests.get(marketprices)
+# data = res.json()
+# volume = float(data['quoteVolume'])
+# priceNow = float(data['lastPrice'])
+# print(opent[-1])
+# print(priceNow)
 
 
 # order= client.order_oco_sell(
