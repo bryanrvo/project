@@ -118,8 +118,7 @@ def buyfunc(symbol, hoeveelheid, orderprijs):
                     except BinanceAPIException as e:
                         print(e)
                         tm.sleep(10)
-                hoeveelheidintrade = float(orderstatus['executedQty'])
-                totalpaidfirsttrade =  hoeveelheidintrade * priceNow
+                totalpaidfirsttrade = 0
     if orderstatus == "FILLED":
         inposition = True
         orderstatus = ""
@@ -130,8 +129,7 @@ def buyfunc(symbol, hoeveelheid, orderprijs):
             except BinanceAPIException as e:
                 print(e)
                 tm.sleep(10)
-        hoeveelheidintrade = float(orderstatus['executedQty'])
-        totalpaidfirsttrade =  hoeveelheidintrade * priceNow
+        totalpaidfirsttrade =  0
     return inposition, totalpaidfirsttrade 
 
 def firstbuyfunc(symbol, time, priceNow, close):
@@ -229,12 +227,12 @@ def positiefbm():
     opent = [float(entry[1]) for entry in klines]
     opent = np.asarray(opent)
     priceNow, volume = lastpricefunc('BTCEUR')
-    if priceNow > opent[1]:
+    if priceNow > opent[1] * 0.995:
         klines = client.get_historical_klines(symbol='BTCEUR', start_str='60 minutes ago UTC', interval='1m')
         opent = [float(entry[1]) for entry in klines]
         opent = np.asarray(opent)
         priceNow, volume = lastpricefunc('BTCEUR')
-        if priceNow > opent[1] * 1.001:
+        if priceNow > opent[1]:
             return True
     return False
 
@@ -271,6 +269,7 @@ while True:
         print(inposition)
         for symbol in symbols:
             bm = positiefbm()
+            print(bm)
             if bm:
                 for time in times:
                     priceNow, volume = lastpricefunc(symbol)
@@ -280,7 +279,7 @@ while True:
                         lastcloseprice = close[-1]
                         slowk, slowd = STOCH(klines)
                         upper, middle, lower = BBANDS(klines)
-                        print(lower[-1], symbol, time)
+                        print(symbol, time)
                         last_upper = upper[-1]
                         last_lower = lower[-1]
                         last_slowk = slowk[-1]
@@ -532,7 +531,7 @@ while True:
                                                                     pricepaid = float(pricepaid['price'])
                                                                     bovenprijs = pricepaid * 1.01
                                                                     stopprijs = pricepaid * 0.99
-                                                                    limitprijs = stopprijs * 0.998
+                                                                    limitprijs = stopprijs * 0.995
                                                                     print("HIER")
                                                                 else : 
                                                                     pricepaid = float(pricepaid['price'])
