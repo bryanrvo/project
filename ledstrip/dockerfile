@@ -1,0 +1,17 @@
+FROM python:3.7
+
+RUN pip install requests
+RUN pip install rpi-ws281x
+RUN pip install flask
+RUN pip install imagecolor
+
+ADD static /static
+ADD templates /templates
+
+
+COPY project.py /project.py
+EXPOSE 3000
+
+ENV TZ="Europe/Amsterdam"
+
+CMD ["python", "project.py"]
