@@ -66,6 +66,14 @@ def klinesinfo(symbol, start_str, time, lendele):
         del klines[-1]
     return klines, high, low, close, volume
 
+def openklinesinfo(symbol, start_str, time, lendele):
+    klines = client.get_historical_klines(symbol=symbol, start_str=start_str , interval=time)
+    opent = [float(entry[1]) for entry in klines]
+    opent = np.asarray(opent)
+    if lendele == True:
+        opent = np.delete(opent, len(opent)-1,0)
+    return opent
+
 def buyfunc(symbol, hoeveelheid, orderprijs):
     order = client.order_limit_buy(symbol=symbol,quantity=hoeveelheid,price=orderprijs)
     clientOrderId = order['orderId']
@@ -172,7 +180,7 @@ def firstbuyfunc(symbol, time, priceNow, close):
         telegramtest.send_message(text, chat)
         inposition = False
         totalpaidfirsttrade = 0
-        return inposition, orderprijs, breakeven, totalpaidfirsttrade
+        return inposition, orderprijs, breakeven, totalpaidfirsttrade, 0
     print(time)
     print(minimum)
     print(hoeveelheid)
@@ -243,70 +251,10 @@ def positiefbm():
             return True
     return True
 
-def laatsteverkopenkwart1(singlesymbol, symbol, start_str, time, firstorder, inposition):
-    priceNow, volume = lastpricefunc(symbol)
-    klines, high, low, close, volume = klinesinfo(symbol, start_str, time, True)
-    upper, middle, lower = BBANDS(klines)
-    symbolbalace = client.get_asset_balance(asset=singlesymbol)
-    symbolbalace = float(symbolbalace['free'])
-    symbolbalace = float(round(symbolbalace, len(str(minimum)) -2))
-    stopprice = round(firstorder, len(str(priceNow)) -2)
-    stopprice = str(stopprice)
-    price = round(firstorder * 0.992, len(str(priceNow)) -2)
-    price = str(price)
-    #STOP LOSE ON ORDERPRIJS
-    order = client.create_order(symbol=symbol, side=client.SIDE_SELL, type=client.ORDER_TYPE_STOP_LOSS_LIMIT, quantity=symbolbalace, stopPrice=stopprice, price=price, timeInForce=client.TIME_IN_FORCE_GTC)
-    clientOrderId = order['orderId']
-    tm.sleep(60)
-    orderstatus = ""
-    while orderstatus == "":
-        try:
-            orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
-            orderstatus = orderstatus['status']
-        except BinanceAPIException as e:
-            print(e)
-            tm.sleep(10)
-    while inposition == True:
-        if close[-1] > middle[-1] and orderstatus != "FILLED":
-            #STOP LOSE ONDER BB MIDDELSTE LIJN
-            stopprice = round(middle[-1] * 0.9985, len(str(priceNow)) -2)
-            stopprice = str(stopprice)
-            price = round((middle[-1] * 0.9985) * 0.992, len(str(priceNow)) -2)
-            price = str(price)
-            result = client.cancel_order(symbol=symbol,orderId=clientOrderId)
-            order = client.create_order(symbol=symbol, side=client.SIDE_BUY, type=client.ORDER_TYPE_STOP_LOSS_LIMIT, quantity=symbolbalace, stopPrice=stopprice, price=price, timeInForce=client.TIME_IN_FORCE_GTC)
-            clientOrderId = order['orderId']
-            while inposition == True:
-                klines, high, low, close, volume = klinesinfo(symbol, start_str, time, True)
-                upper, middle, lower = BBANDS(klines)
-                orderstatus = ""
-                while orderstatus == "":
-                    try:
-                        orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
-                        orderstatus = orderstatus['status']
-                    except BinanceAPIException as e:
-                        print(e)
-                        tm.sleep(10)
-                priceNow, volume = lastpricefunc(symbol)
-                if orderstatus!= "FILLED" and orderstatus!= "PARTIALLY_FILLED" and close[-1] > close [-2] and close[-1] > middle[-1]:
-                    result = client.cancel_order(symbol=symbol,orderId=clientOrderId)
-                    stopprice = round(close [-2], len(str(priceNow)) -2)
-                    stopprice = str(stopprice)
-                    price = round(close [-2] * 0.992, len(str(priceNow)) -2)
-                    price = str(price)
-                    order = client.create_order(symbol=symbol, side=client.SIDE_BUY, type=client.ORDER_TYPE_STOP_LOSS_LIMIT, quantity=symbolbalace, stopPrice=stopprice, price=price, timeInForce=client.TIME_IN_FORCE_GTC)
-                    clientOrderId = order['orderId']
-                    tm.sleep(60)
-                elif orderstatus ==  "FILLED":
-                    inposition = False
-                    return inposition
-        elif orderstatus ==  "FILLED":
-            inposition = False
-            return inposition
-
 def laatsteverkopenkwart(singlesymbol, symbol, start_str, time, firstorder, inposition):
     priceNow, volume = lastpricefunc(symbol)
     klines, high, low, close, volume = klinesinfo(symbol, start_str, time, True)
+    opent = openklinesinfo(symbol, start_str, time, True)
     upper, middle, lower = BBANDS(klines)
     symbolbalace = client.get_asset_balance(asset=singlesymbol)
     symbolbalace = float(symbolbalace['free'])
@@ -329,6 +277,7 @@ def laatsteverkopenkwart(singlesymbol, symbol, start_str, time, firstorder, inpo
             tm.sleep(10)
     while inposition == True:
         klines, high, low, close, volume = klinesinfo(symbol, start_str, time, True)
+        opent = openklinesinfo(symbol, start_str, time, True)
         upper, middle, lower = BBANDS(klines)
         orderstatus = ""
         while orderstatus == "":
@@ -338,13 +287,15 @@ def laatsteverkopenkwart(singlesymbol, symbol, start_str, time, firstorder, inpo
             except BinanceAPIException as e:
                 print(e)
                 tm.sleep(10)
-        if orderstatus!= "FILLED" and orderstatus!= "PARTIALLY_FILLED" and close[-1] > close [-2]:
+        if orderstatus!= "FILLED" and orderstatus!= "PARTIALLY_FILLED" and close[-1] > close [-2] and close[-1] > opent[-1]:
             result = client.cancel_order(symbol=symbol,orderId=clientOrderId)
-            stopprice = round(close [-2], len(str(priceNow)) -2)
+            stopprice = round(opent[-2], len(str(priceNow)) -2)
             price = round(stopprice * 0.998, len(str(priceNow)) -2)
             stopprice = str(stopprice)
             price = str(price)
-            order = client.create_order(symbol=symbol, side=client.SIDE_BUY, type=client.ORDER_TYPE_STOP_LOSS_LIMIT, quantity=symbolbalace, stopPrice=stopprice, price=price, timeInForce=client.TIME_IN_FORCE_GTC)
+            print(stopprice)
+            print(price)
+            order = client.create_order(symbol=symbol, side=client.SIDE_SELL, type=client.ORDER_TYPE_STOP_LOSS_LIMIT, quantity=symbolbalace, stopPrice=stopprice, price=price, timeInForce=client.TIME_IN_FORCE_GTC)
             clientOrderId = order['orderId']
             tm.sleep(60)
         elif orderstatus ==  "FILLED":
@@ -354,9 +305,258 @@ def laatsteverkopenkwart(singlesymbol, symbol, start_str, time, firstorder, inpo
 def get_BBANDSPER(klines):
     df = binanceDataFrame(klines)
     indicator_bb = BollingerBands(df["Close"])
-    df['bb_bbp'] = indicator_bb.bollinger_pband()
-    persentage = np.asarray(df['bb_bbp'])
+    df['bb_bbh'] = indicator_bb.bollinger_hband()
+    df['bb_bbm'] = indicator_bb.bollinger_mavg()
+    df['bb_bbl'] = indicator_bb.bollinger_lband()
+    upper = np.asarray(df['bb_bbh'])
+    middle = np.asarray(df['bb_bbm'])
+    lower = np.asarray(df['bb_bbl'])
+    persentage = (upper[-1] - lower[-1]) / priceNow * 100
     return persentage
+
+def createoco(singlesymbol, symbol, start_str, time, inposition):
+    priceNow, volume = lastpricefunc(symbol)
+    klines, high, low, close, volume = klinesinfo(symbol, start_str, time, True)
+    upper, middle, lower = BBANDS(klines)
+    symbolbalace = client.get_asset_balance(asset=singlesymbol)
+    symbolbalace = float(symbolbalace['free'])
+    helft = symbolbalace / 4 * 2
+    helft = float(round(helft, len(str(minimum)) -2))
+    inzet = str(round(firstorderprijs, len(str(priceNow)) -2))
+    order = client.order_limit_sell(symbol=symbol, quantity=helft, price=inzet)
+    clientOrderId = order['orderId']
+    count = 0
+    while inposition == True:
+        priceNow, volume = lastpricefunc(symbol)
+        start_str1 = '240 minutes ago UTC'
+        klines, high, low, close, volume = klinesinfo(symbol, start_str1, time, False)
+        sarpoint = SAR(klines)
+        orderstatus = ""
+        while orderstatus == "":
+            try:
+                orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
+                orderstatus = orderstatus['status']
+            except BinanceAPIException as e:
+                print(e)
+                tm.sleep(10)
+        if sarpoint[-1] > priceNow:
+            if count == 0:
+                result = client.cancel_order(symbol=symbol,orderId=clientOrderId)
+                count = 1
+            tm.sleep(30)
+            oldsar = sarpoint[-1]
+            #PLACE STOP LIMIT BUY op de SAR door sar -2
+            symbolbalace = client.get_asset_balance(asset=singlesymbol)
+            symbolbalace = float(symbolbalace['free'])
+            symbolbalace = float(round(symbolbalace, len(str(minimum)) -2))
+            if sarpoint[-1] < middle[-1] and middle[-1] * 0.999 < sarpoint[-1]:
+                stopprice = round((middle[-1] * 1.001) * 0.998, len(str(priceNow)) -2)
+                stopprice = str(stopprice)
+                price = round(middle[-1] * 1.001, len(str(priceNow)) -2)
+                price = str(price)
+                order = client.create_order(symbol=symbol, side=client.SIDE_BUY, type=client.ORDER_TYPE_STOP_LOSS_LIMIT, quantity=symbolbalace, stopPrice=stopprice, price=price, timeInForce=client.TIME_IN_FORCE_GTC)
+                clientOrderId = order['orderId']
+                orderstatus = ""
+            else : 
+                stopprice = round(sarpoint[-1], len(str(priceNow)) -2)
+                stopprice = str(stopprice)
+                price = round(sarpoint[-1] * 1.002, len(str(priceNow)) -2)
+                price = str(price)
+                print("DOOR SAR: ",sarpoint[-1])
+                order = client.create_order(symbol=symbol, side=client.SIDE_BUY, type=client.ORDER_TYPE_STOP_LOSS_LIMIT, quantity=symbolbalace, stopPrice=stopprice, price=price, timeInForce=client.TIME_IN_FORCE_GTC)
+                clientOrderId = order['orderId']
+            orderstatus = ""
+            while orderstatus == "":
+                try:
+                    orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
+                    orderstatus = orderstatus['status']
+                except BinanceAPIException as e:
+                    print(e)
+                    tm.sleep(10)
+            while inposition == True:
+                start_str1 = '240 minutes ago UTC'
+                priceNow, volume = lastpricefunc(symbol)
+                klines, high, low, close, volume = klinesinfo(symbol, start_str1, time, False)
+                sarpoint = SAR(klines)
+                upper, middle, lower = BBANDS(klines)
+                persentage = get_BBANDSPER(klines)
+                orderstatus = ""
+                while orderstatus == "":
+                    try:
+                        orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
+                        orderstatus = orderstatus['status']
+                    except BinanceAPIException as e:
+                        print(e)
+                        tm.sleep(10)
+                if orderstatus != "FILLED" and orderstatus != "PARTIALLY_FILLED" and sarpoint[-1] != oldsar and sarpoint[-2] - sarpoint[-1] > priceNow * 0.0002 and sarpoint[-1] > priceNow:
+                    if sarpoint[-1] < middle[-1] and middle[-1] * 0.999 < sarpoint[-1]:
+                        oldsar = sarpoint[-1]
+                        result = client.cancel_order(symbol=symbol,orderId=clientOrderId)
+                        stopprice = round(middle[-1] * 1.001, len(str(priceNow)) -2)
+                        stopprice = str(stopprice)
+                        price = round((middle[-1] * 1.001) * 1.002, len(str(priceNow)) -2)
+                        price = str(price)
+                        order = client.create_order(symbol=symbol, side=client.SIDE_BUY, type=client.ORDER_TYPE_STOP_LOSS_LIMIT, quantity=symbolbalace, stopPrice=stopprice, price=price, timeInForce=client.TIME_IN_FORCE_GTC,)
+                        clientOrderId = order['orderId']
+                    else :  
+                        oldsar = sarpoint[-1]
+                        result = client.cancel_order(symbol=symbol,orderId=clientOrderId)
+                        stopprice = round(sarpoint[-1], len(str(priceNow)) -2)
+                        stopprice = str(stopprice)
+                        price = round(sarpoint[-1] * 1.002, len(str(priceNow)) -2)
+                        price = str(price)
+                        order = client.create_order(symbol=symbol, side=client.SIDE_BUY, type=client.ORDER_TYPE_STOP_LOSS_LIMIT, quantity=symbolbalace, stopPrice=stopprice, price=price, timeInForce=client.TIME_IN_FORCE_GTC)
+                        clientOrderId = order['orderId']
+                elif orderstatus == "FILLED": #HIER KOMT ALS STOP IS GEVULD
+                    symbolbalace = ""
+                    while symbolbalace == "" or symbolbalace == '0':
+                        symbolbalace = client.get_asset_balance(asset=singlesymbol)
+                        symbolbalace = float(symbolbalace['free']) / 2
+                        symbolbalace = float(round(symbolbalace, len(str(minimum)) -2))
+                    pricepaid = ""
+                    while pricepaid == "":
+                        try:
+                            pricepaid = client.get_order(symbol=symbol, orderId=clientOrderId)
+                        except BinanceAPIException as e:
+                            print(e)
+                            tm.sleep(10)
+                    if persentage > 2.5:
+                        pricepaid = float(pricepaid['price'])
+                        bovenprijs = pricepaid * 1.008
+                        stopprijs = pricepaid * 0.992
+                        limitprijs = stopprijs * 0.998
+                        print("Hier")
+                    else : 
+                        pricepaid = float(pricepaid['price'])
+                        bovenprijs = pricepaid * 1.005
+                        stopprijs = pricepaid * 0.995
+                        limitprijs = stopprijs * 0.998
+                        print("Hier2")
+                    text = 'OCO ORDER'
+                    telegramtest.send_message(text, chat)
+                    bovenprijs = round(bovenprijs, len(str(priceNow)) -2)
+                    stopprijs = round(stopprijs, len(str(priceNow)) -2)
+                    limitprijs = round(limitprijs, len(str(priceNow)) -2)
+                    stopprijs = str(stopprijs)
+                    limitprijs = str(limitprijs)
+                    bovenprijs = str(bovenprijs)
+                    print(pricepaid)
+                    print(bovenprijs)
+                    print(limitprijs)
+                    print(stopprice)
+                    #HIER KMT OCO ORDER met 0,5 winst en 0,5 verlies
+                    order = ""
+                    while order == "":
+                        try:
+                            order= client.order_oco_sell(
+                                symbol= symbol,                                            
+                                quantity= symbolbalace,                                            
+                                price= bovenprijs, #BOVENSTE PRIJS                                           
+                                stopPrice= stopprijs, #STOP                                           
+                                stopLimitPrice= limitprijs, #DOOR ONDER
+                                stopLimitTimeInForce=client.TIME_IN_FORCE_GTC)
+                        except BinanceAPIException as e:
+                            print(e)
+                            tm.sleep(10)
+                    first = order['orders'][0]['orderId']
+                    firsttype = order['orderReports'][0]['type']
+                    second = order['orders'][1]['orderId']
+                    secondtype = order['orderReports'][1]['type']
+                    while inposition == True:
+                        firstorderstatus = ""
+                        while firstorderstatus == "":
+                            try:
+                                orderstatus = client.get_order(symbol=symbol, orderId=first)
+                                firstorderstatus = orderstatus['status']
+                            except BinanceAPIException as e:
+                                print(e)
+                                tm.sleep(10)
+                        secondorderstatus = ""
+                        while secondorderstatus == "":
+                            try:
+                                orderstatus = client.get_order(symbol=symbol, orderId=second)
+                                secondorderstatus = orderstatus['status']
+                            except BinanceAPIException as e:
+                                print(e)
+                                tm.sleep(10)
+                        if firstorderstatus == "FILLED" or secondorderstatus == "FILLED":
+                            if firstorderstatus == "FILLED":
+                                if firsttype == "STOP_LOSS_LIMIT":
+                                    oco = "VERLIES"
+                                elif firsttype == "LIMIT_MAKER":
+                                    oco = "WINST"
+                            elif secondorderstatus == "FILLED":
+                                if secondtype == "STOP_LOSS_LIMIT":
+                                    oco = "VERLIES"
+                                elif secondtype == "LIMIT_MAKER":
+                                    oco = "WINST"
+                            while inposition == True:
+                                if oco == "WINST":
+                                    return oco, inposition
+                                elif oco == "VERLIES":
+                                    return	oco, inposition
+                
+                elif orderstatus == "FILLED":
+                    tm.sleep(30)
+                    symbolbalace = client.get_asset_balance(asset=singlesymbol)
+                    symbolbalace = float(symbolbalace['free'])
+                    symbolbalace = float(round(symbolbalace, len(str(minimum)) -2))
+                    print(symbolbalace)
+                    inposition = laatsteverkopenkwart(singlesymbol, symbol, start_str, time, breakeven, inposition)
+                    return	0, inposition
+
+def winstofverlies(singlesymbol, symbol, start_str, time, inposition, tellen, oco):
+    print(singlesymbol, symbol, start_str, time, inposition, tellen, oco)
+    klines, high, low, close, volume = klinesinfo(symbol, start_str, time, False)
+    sarpoint = SAR(klines)
+    priceNow, volume = lastpricefunc(symbol)
+    createordertel = 0
+    print(0)
+    if oco == "VERLIES":
+        tellen = tellen + 1
+        while oco == "VERLIES":
+            klines, high, low, close, volume = klinesinfo(symbol, start_str, time, False)
+            sarpoint = SAR(klines)
+            priceNow, volume = lastpricefunc(symbol)
+            if sarpoint[-1] > priceNow:
+                oco, inposition = createoco(singlesymbol, symbol, start_str, time, inposition)
+                return oco, inposition, tellen
+    elif oco == "WINST":
+        while inposition == True:
+            if priceNow < firstorderprijs:
+                klines, high, low, close, volume = klinesinfo(symbol, start_str1, time, False)
+                sarpoint = SAR(klines)
+                priceNow, volume = lastpricefunc(symbol)
+                if createordertel == 0:
+                    symbolbalace = client.get_asset_balance(asset=singlesymbol)
+                    symbolbalace = float(symbolbalace['free'])
+                    helft = symbolbalace / 4 * 2
+                    helft = float(round(helft, len(str(minimum)) -2))
+                    inzet = str(round(firstorderprijs, len(str(priceNow)) -2))
+                    order = client.order_limit_sell(symbol=symbol, quantity=helft, price=inzet)
+                    clientOrderId = order['orderId']
+                    createordertel = 1
+                    tm.sleep(60)
+                orderstatus = ""
+                while orderstatus == "":
+                    try:
+                        orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
+                        orderstatus = orderstatus['status']
+                    except BinanceAPIException as e:
+                        print(e)
+                        tm.sleep(10)
+                if sarpoint[-1] > priceNow and  orderstatus != "FILLED":
+                    result = client.cancel_order(symbol=symbol,orderId=clientOrderId)
+                    oco, inposition = createoco(singlesymbol, symbol, start_str, time, inposition)
+                    return oco, inposition, tellen
+                elif orderstatus == "FILLED":
+                    result = client.cancel_order(symbol=symbol,orderId=clientOrderId)
+                    inposition = laatsteverkopenkwart(singlesymbol, symbol, start_str, time, breakeven, inposition)
+                    return oco, inposition, tellen
+            else :
+                result = client.cancel_order(symbol=symbol,orderId=clientOrderId)
+                inposition = laatsteverkopenkwart(singlesymbol, symbol, start_str, time, breakeven, inposition)
+                return oco, inposition, tellen
 
 while True:
     current_time = datetime.datetime.now().time()
@@ -399,7 +599,7 @@ while True:
                     data = res.json()
                     prijsper = float(data['priceChangePercent'])
                     priceNow, volume = lastpricefunc(symbol)
-                    if priceNow > 0.0000500 and volume > 150 and prijsper > -5 and pprijsper < 10 :
+                    if priceNow > 0.0000250 and volume > 150 and prijsper > -5 and prijsper < 10:
                         klines, high, low, close, volume = klinesinfo(symbol, start_str, time, True)
                         volume = volume[-10:]
                         lastcloseprice = close[-1]
@@ -411,13 +611,13 @@ while True:
                         last_slowk = slowk[-1]
                         last_slowd = slowd[-1]
                         difuplow = last_upper - last_lower
-                        persentage = get_BBANDSPER(persentage)
+                        persentage = get_BBANDSPER(klines)
+                        print(persentage)
                         if last_slowk < 20 and  last_slowd < 20 and all(i >= 10 for i in volume):
                         # if slowk[-2] < slowd[-2] and  slowk[-1] > slowd[-1] or slowd[-2] < slowk[-2] and  slowd[-1] > slowk[-1] and last_slowk < 20:
                             if last_lower > lastcloseprice:
                                 priceNow, volume = lastpricefunc(symbol)
                                 if priceNow < close[-1] * 1.005 and priceNow > close[-1] * 0.995:
-                                    print(persentage)
                                     if time == '1m' and persentage > 1 and persentage < 4:
                                         btc_balanceold = client.get_asset_balance(asset='BTC')
                                         btc_balanceold = float(btc_balanceold['free'])
@@ -482,8 +682,8 @@ while True:
                                                 except BinanceAPIException as e:
                                                     print(e)
                                                     tm.sleep(10)
-                                            is_betweenclose3 = breakeven * 0.997 <= close[-3] <= breakeven * 1.003
-                                            is_betweenclose2 = breakeven * 0.997 <= close[-2] <= breakeven * 1.003
+                                            is_betweenclose3 = close[-2] * 0.997 <= close[-1] <= close[-2] * 1.003
+                                            is_betweenclose2 = close[-3] * 0.997 <= close[-2] <= close[-3] * 1.003
                                             is_betweenclose1 = breakeven * 0.997 <= close[-1] <= breakeven * 1.003
                                             if sellorderstatus == "FILLED":
                                                 text = 'verkocht' + str(time)
@@ -569,7 +769,9 @@ while True:
                                                             klines, high, low, close, volume = klinesinfo(symbol, start_str1, time, False)
                                                             sarpoint = SAR(klines)
                                                             upper, middle, lower = BBANDS(klines)
+                                                            persentage = get_BBANDSPER(klines)
                                                             orderstatus = ""
+                                                            print(clientOrderId)
                                                             while orderstatus == "":
                                                                 try:
                                                                     orderstatus = client.get_order(symbol=symbol, orderId=clientOrderId)
@@ -615,7 +817,7 @@ while True:
                                                                         tm.sleep(10)
                                                                 breakeven = ((firstorderprijs * firstsechoeveelheid) + (secondorderprijs * firstsechoeveelheid) + (thirdorderprijs * thirdhoeveelheid))/ (firstsechoeveelheid + firstsechoeveelheid + thirdhoeveelheid)
                                                                 breakeven = breakeven * 1.002
-                                                                if upper[-1] - lower[-1] > priceNow / 100 * 2.5:
+                                                                if persentage > 2.5:
                                                                     pricepaid = float(pricepaid['price'])
                                                                     bovenprijs = pricepaid * 1.008
                                                                     stopprijs = pricepaid * 0.99
@@ -683,23 +885,19 @@ while True:
                                                                                 oco = "VERLIES"
                                                                             elif secondtype == "LIMIT_MAKER":
                                                                                 oco = "WINST"
+                                                                        createordertel = 0
+                                                                        tellen = 0
                                                                         while inposition == True:
-                                                                            if oco == "WINST":
-                                                                                if bovenprijs > breakeven:
-                                                                                    inposition = laatsteverkopenkwart(singlesymbol, symbol, start_str, time, breakeven, inposition)
-                                                                                else :
-                                                                                    inposition = laatsteverkopenkwart(singlesymbol, symbol, start_str, time, breakeven, inposition)
-                                                                                text = 'WINST UIT DE OCO ORDER ZELF VERDER GAAN'
-                                                                                telegramtest.send_message(text, chat)
-                                                                                inposition = False
-                                                                            elif oco == "VERLIES":
-                                                                                # symbolbalace = client.get_asset_balance(asset=singlesymbol)
-                                                                                # symbolbalace = float(symbolbalace['free'])
-                                                                                # symbolbalace = float(round(symbolbalace, len(str(minimum)) -2))
-                                                                                # order = client.order_market_sell(symbol=symbol,quantity=symbolbalace)
-                                                                                text = 'JE HEBT VERLIES GEMAAKT!'
-                                                                                telegramtest.send_message(text, chat)
-                                                                                inposition = False
+                                                                            if tellen == 3:
+                                                                                tm.sleep(30)
+                                                                                symbolbalace = client.get_asset_balance(asset=singlesymbol)
+                                                                                symbolbalace = float(symbolbalace['free'])
+                                                                                symbolbalace = float(round(symbolbalace, len(str(minimum)) -2))
+                                                                                order = client.order_market_sell(symbol=symbol,quantity=symbolbalace)
+                                                                            else : 
+                                                                                print(singlesymbol, symbol, start_str, time, inposition, tellen, oco)
+                                                                                oco, inposition, tellen = winstofverlies(singlesymbol, symbol, start_str, time, inposition, tellen, oco)
+                                                                                
                                                                             
                                                     elif orderstatus == "FILLED":
                                                         tm.sleep(30)
@@ -710,7 +908,7 @@ while True:
                                                         inposition = laatsteverkopenkwart(singlesymbol, symbol, start_str, time, breakeven, inposition)
 
 
-                                            elif buyorderstatus != "FILLED" and sellorderstatus != "FILLED" and execution_time > 3600 and priceNow > breakeven * 1.0002: # and is_betweenclose1 and is_betweenclose2 and is_betweenclose3:
+                                            elif buyorderstatus != "FILLED" and sellorderstatus != "FILLED" and execution_time > 3600 and priceNow > breakeven * 1.0002 and is_betweenclose2 and is_betweenclose3:
                                                 result = client.cancel_order(symbol=symbol,orderId=sellclientOrderId)
                                                 result = client.cancel_order(symbol=symbol,orderId=orderclientOrderId)
                                                 tm.sleep(60)
@@ -734,7 +932,7 @@ while True:
                                                         except BinanceAPIException as e:
                                                             print(e)
                                                             tm.sleep(10)
-                                                text = "VERKOCHT 1 UUR:" + str(symbol) + str(time)
-                                                telegramtest.send_message(text, chat)
-                                                inposition = False
+                                                    text = "VERKOCHT 1 UUR:" + str(symbol) + str(time)
+                                                    telegramtest.send_message(text, chat)
+                                                    inposition = False
                                     

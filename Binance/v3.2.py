@@ -16,7 +16,7 @@ nutijd = datetime.datetime.now()
 start_time = nutijd.replace(hour=7, minute=0, second=0, microsecond=0)
 end_time = nutijd.replace(hour=22, minute=0, second=0, microsecond=0) 
 
-client = Client('', ' ')
+client = Client('', '')
 inposition = False
 start_str = '100 minutes ago UTC'
 

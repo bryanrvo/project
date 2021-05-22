@@ -1,3 +1,25 @@
+import sys
+# append current python modules' folder path
+# example: need to import module.py present in '/path/to/python/module/not/in/syspath'
+sys.path.append('C:\\Users\\bryan\\Documents')
+from APIcode import api_key
+from APIcode import api_secret
+import telegramtest
+
+
+print(api_secret)
+
+import os
+if os.name == 'nt':
+    import sys
+    # append current python modules' folder path
+    # example: need to import module.py present in '/path/to/python/module/not/in/syspath'
+    sys.path.append('C:\\Users\\bryan\\Documents')
+    from APIcode import api_key
+    from APIcode import api_secret
+
+
+
 api_key = ''
 api_secret = ''
 
@@ -47,7 +69,7 @@ def positiefbm():
         opent = np.asarray(opent)
         priceNow, volume = lastpricefunc('BTCEUR')
         if priceNow > opent[1] * 1.001:
-            return True:
+            return True
     return False
 
 while True:

@@ -1,0 +1,16 @@
+#docker build -t "talib:v3" .
+#docker run -d --restart=always talib:v3
+FROM python:3.7
+
+RUN pip install python-binance
+RUN pip install ta
+RUN pip install numpy
+RUN pip install requests
+RUN pip install pandas
+
+COPY telegramtest.py /telegramtest.py 
+COPY v8.0.py /v8.0.py
+
+ENV TZ="Europe/Amsterdam"
+
+CMD ["python", "v8.0.py"]
