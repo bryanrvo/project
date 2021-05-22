@@ -2,7 +2,14 @@ import json
 import requests
 import time
 
-TOKEN = ""
+import os
+if os.name == 'nt':
+    import sys
+    # append current python modules' folder path
+    # example: need to import module.py present in '/path/to/python/module/not/in/syspath'
+    sys.path.append('C:\\Users\\bryan\\Documents')
+
+from APIcode import TOKEN
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 
 
