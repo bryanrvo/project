@@ -38,6 +38,7 @@ kleurenhtml = "rgb(255, 0, 0)"
 state = "vullen"
 newstate = ""
 r, g, b = 0, 0, 0
+scenenummer = 0
 
 def aansturing(self):
     global led_stripValue, ambilightValue
@@ -89,6 +90,11 @@ def aansturing(self):
                 colorWipe(strip, Color(r,g,b))
             elif state == "rainbow":
                 rainbow(strip)
+            if state == "SceneHue":
+                SceneHue(strip,scenenummer)
+                state = ""
+            else :
+                scenenummer = 0
         else:
             vullen(strip, Color(0,0,0))
         if ambilightValue == "checked":
@@ -99,9 +105,6 @@ def aansturing(self):
                 if  execution_time > 3000:
                     setColor(tn, r, g, b)
                     start_time = datetime.datetime.now()
-
-        
-
 
 def run(self):
     while True:
@@ -212,9 +215,6 @@ def power():
         led_strip = request.form.get('led_strip')
         ambilight = request.form.get('ambilight')
         sensor = request.form.get('sensor')
-#         led_strip = request.form['led_strip']
-#         ambilight = request.form['ambilight']
-#         sensor = request.form['sensor']
         if led_strip == 'led strip' and led_stripValue == "":
             stoppen(0)
             if huestate == False:
@@ -330,6 +330,22 @@ def ditiskleur():
             vullen(strip, Color(0, 0, 0))
         return render_template('color.html')
 
+@app.route("/alarm", methods=["GET"])
+def alarm():
+    global kleurenhtml
+    global scenenummer
+    return render_template('alarm.html', scenenummer = scenenummer)
+
+@app.route("/scene", methods=["POST"])
+def scene():
+    if request.method == 'POST':
+        global state, scenenummer
+        scenenummer = request.form['scenenummer']
+        print(scenenummer)
+        stoppen(1)
+        state = "SceneHue"
+        return render_template('alarm.html',scenenummer = scenenummer)
+
 
 GPIO.add_event_detect(10, GPIO.RISING, callback, bouncetime=300)
 
@@ -337,7 +353,7 @@ GPIO.add_event_detect(10, GPIO.RISING, callback, bouncetime=300)
 if __name__ == '__main__':
     global led
     setup()
-    app.run(host = '192.168.68.75', port = 3000)
+    app.run(host = '192.168.68.80', port = 3000)
     #vullen(strip, Color(r , g, b))
 
 

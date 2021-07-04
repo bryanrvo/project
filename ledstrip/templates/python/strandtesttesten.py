@@ -200,7 +200,6 @@ def ajaxscore(strip):
         if f == 289:
             f = 1
 
-
 def FadeInOut(strip, r, g, b):
     """FadeInOut(strip, Color(r, g , b))"""
     for j in range(0,256,2):
@@ -431,7 +430,6 @@ def fadeToBlack(strip, ledNo, fadeValue):
     b = int(b-(b*fadeValue/256))
     strip.setPixelColor(ledNo, Color(r,g,b))
     
-
 def RunningLights(strip, r, g, b, WaveDelay):
     Position = 0
     for j in range(strip.numPixels() * 2):
@@ -513,7 +511,44 @@ def RightToLeft(strip, r, g, b, EyeSize, SpeedDelay, ReturnDelay):
         strip.show()
         time.sleep(SpeedDelay)
     time.sleep(ReturnDelay)
-    
+
+def SceneHue(strip,scenenummer):
+    if scenenummer == 1:
+        for i in range(2,strip.numPixels(),2):
+            strip.setPixelColor(i, Color(255,95,42))
+        for i in range(1,strip.numPixels(),2):
+            strip.setPixelColor(i, Color(255,126,69))  
+    elif scenenummer == 2:
+        for i in range(2,strip.numPixels(),2):
+            strip.setPixelColor(i, Color(255,202,236))
+        for i in range(1,strip.numPixels(),2):
+            strip.setPixelColor(i, Color(255,160,77))
+    elif scenenummer == 3:
+        for i in range(2,strip.numPixels(),2):
+            strip.setPixelColor(i, Color(63,79,255))
+        for i in range(1,strip.numPixels(),2):
+            strip.setPixelColor(i, Color(106,255,167))    
+    elif scenenummer == 4:
+        for i in range(2,strip.numPixels(),2):
+            strip.setPixelColor(i, Color(255,184,208))
+        for i in range(1,strip.numPixels(),2):
+            strip.setPixelColor(i, Color(255,104,155))  
+    elif scenenummer == 5:
+        vullen(strip, Color(255,188,85))
+    elif scenenummer == 6:
+        vullen(strip, Color(255,210,129))
+    elif scenenummer == 7:
+        vullen(strip, Color(255,240,198))
+    elif scenenummer == 8:
+        vullen(strip, Color(246,255,254))
+    elif scenenummer == 9:
+        vullen(strip, Color(255,207,120))
+    elif scenenummer == 10:
+        vullen(strip, Color(255,205,120))
+    elif scenenummer == 11:
+        vullen(strip, Color(255,160,39))
+    strip.show()
+
 def stoppen(stop):
     global stopdef
     if stop == 1:
@@ -567,6 +602,8 @@ def aanroepen(strip, led_stripValue, state, r, g, b):
             
     else:
         vullen(strip, Color(0,0,0))
+
+
 
 
 #NewKITT(255, 0, 0, 20, 0.010, 0.050);

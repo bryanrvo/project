@@ -92,6 +92,7 @@ def buyfunc(symbol, hoeveelheid, orderprijs):
         start_time = datetime.datetime.now()
         while orderstatus != "FILLED":
             orderstatus = ""
+            priceNow, volume = lastpricefunc(symbol)
             while orderstatus == "":
                 try:
                     orderstatus = client.get_order(symbol=symbol,orderId=clientOrderId)
@@ -108,7 +109,7 @@ def buyfunc(symbol, hoeveelheid, orderprijs):
                 tijd = 181
             elif time == '5m':
                 tijd = 301
-            if orderstatus == "NEW" and execution_time > tijd:
+            if orderstatus == "NEW" and execution_time > tijd and priceNow > orderprijs * 1.005:
                 inposition = False
                 result = client.cancel_order(symbol=symbol,orderId=clientOrderId)
                 while orderstatus != "CANCELED":
@@ -248,9 +249,9 @@ def positiefbm():
         opent = [float(entry[1]) for entry in klines]
         opent = np.asarray(opent)
         priceNow, volume = lastpricefunc('BTCEUR')
-        if priceNow > opent[1]:
+        if priceNow > opent[1] * 0.997:
             return True
-    return True
+    return False
 
 def laatsteverkopenkwart(singlesymbol, symbol, start_str, time, firstorder, inposition):
     priceNow, volume = lastpricefunc(symbol)
@@ -423,14 +424,14 @@ def createoco(singlesymbol, symbol, start_str, time, inposition):
                             tm.sleep(10)
                     if persentage > 2.5:
                         pricepaid = float(pricepaid['price'])
-                        bovenprijs = pricepaid * 1.008
-                        stopprijs = pricepaid * 0.992
+                        bovenprijs = pricepaid * 1.015
+                        stopprijs = pricepaid * 0.985
                         limitprijs = stopprijs * 0.998
                         print("Hier")
                     else : 
                         pricepaid = float(pricepaid['price'])
-                        bovenprijs = pricepaid * 1.005
-                        stopprijs = pricepaid * 0.995
+                        bovenprijs = pricepaid * 1.01
+                        stopprijs = pricepaid * 0.99
                         limitprijs = stopprijs * 0.998
                         print("Hier2")
                     text = 'OCO ORDER'

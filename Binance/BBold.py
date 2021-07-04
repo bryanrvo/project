@@ -18,8 +18,6 @@ if os.name == 'nt':
     from APIcode import api_key
     from APIcode import api_secret
 
-
-
 api_key = ''
 api_secret = ''
 

@@ -4,6 +4,8 @@ RUN pip install requests
 RUN pip install rpi-ws281x
 RUN pip install flask
 RUN pip install imagecolor
+RUN pip install rpi.gpio
+RUN pip install numpy
 
 ADD static /static
 ADD templates /templates

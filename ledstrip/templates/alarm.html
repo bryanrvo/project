@@ -1,0 +1,442 @@
+{% extends "Template.html" %}
+    {% block content %}
+    <script>
+        function Savannasunset() {
+            document.getElementById("Savanna sunset").classList.add("active");
+            document.getElementById("Tropical Twilight").classList.remove("active");
+            document.getElementById("Artic Aurorat").classList.remove("active");
+            document.getElementById("Spring Blossom").classList.remove("active");
+            document.getElementById("Relax").classList.remove("active");
+            document.getElementById("Read").classList.remove("active");
+            document.getElementById("Concentrate").classList.remove("active");
+            document.getElementById("Energize").classList.remove("active");
+            document.getElementById("Bright").classList.remove("active");
+            document.getElementById("Dimmed").classList.remove("active");
+            document.getElementById("Nightlight").classList.remove("active");
+            $.post("/scene", {
+	            scenenummer: 1
+	        });
+            }
+        function TropicalTwilight() {
+        document.getElementById("Savanna sunset").classList.remove("active");
+        document.getElementById("Tropical Twilight").classList.add("active");
+        document.getElementById("Artic Aurorat").classList.remove("active");
+        document.getElementById("Spring Blossom").classList.remove("active");
+        document.getElementById("Relax").classList.remove("active");
+        document.getElementById("Read").classList.remove("active");
+        document.getElementById("Concentrate").classList.remove("active");
+        document.getElementById("Energize").classList.remove("active");
+        document.getElementById("Bright").classList.remove("active");
+        document.getElementById("Dimmed").classList.remove("active");
+        document.getElementById("Nightlight").classList.remove("active");
+        $.post("/scene", {
+            scenenummer: 2
+        });
+        }
+        function ArticAurorat() {
+        document.getElementById("Savanna sunset").classList.remove("active");
+        document.getElementById("Tropical Twilight").classList.remove("active");
+        document.getElementById("Artic Aurorat").classList.add("active");
+        document.getElementById("Spring Blossom").classList.remove("active");
+        document.getElementById("Relax").classList.remove("active");
+        document.getElementById("Read").classList.remove("active");
+        document.getElementById("Concentrate").classList.remove("active");
+        document.getElementById("Energize").classList.remove("active");
+        document.getElementById("Bright").classList.remove("active");
+        document.getElementById("Dimmed").classList.remove("active");
+        document.getElementById("Nightlight").classList.remove("active");
+        $.post("/scene", {
+            scenenummer: 3
+        });
+        }
+        function SpringBlossom() {
+        document.getElementById("Savanna sunset").classList.remove("active");
+        document.getElementById("Tropical Twilight").classList.remove("active");
+        document.getElementById("Artic Aurorat").classList.remove("active");
+        document.getElementById("Spring Blossom").classList.add("active");
+        document.getElementById("Relax").classList.remove("active");
+        document.getElementById("Read").classList.remove("active");
+        document.getElementById("Concentrate").classList.remove("active");
+        document.getElementById("Energize").classList.remove("active");
+        document.getElementById("Bright").classList.remove("active");
+        document.getElementById("Dimmed").classList.remove("active");
+        document.getElementById("Nightlight").classList.remove("active");
+        $.post("/scene", {
+            scenenummer: 4
+        });
+        }
+        function Relax() {
+        document.getElementById("Savanna sunset").classList.remove("active");
+        document.getElementById("Tropical Twilight").classList.remove("active");
+        document.getElementById("Artic Aurorat").classList.remove("active");
+        document.getElementById("Spring Blossom").classList.remove("active");
+        document.getElementById("Relax").classList.add("active");
+        document.getElementById("Read").classList.remove("active");
+        document.getElementById("Concentrate").classList.remove("active");
+        document.getElementById("Energize").classList.remove("active");
+        document.getElementById("Bright").classList.remove("active");
+        document.getElementById("Dimmed").classList.remove("active");
+        document.getElementById("Nightlight").classList.remove("active");
+        $.post("/scene", {
+            scenenummer: 5
+        });
+        }
+        function Read() {
+        document.getElementById("Savanna sunset").classList.remove("active");
+        document.getElementById("Tropical Twilight").classList.remove("active");
+        document.getElementById("Artic Aurorat").classList.remove("active");
+        document.getElementById("Spring Blossom").classList.remove("active");
+        document.getElementById("Relax").classList.remove("active");
+        document.getElementById("Read").classList.add("active");
+        document.getElementById("Concentrate").classList.remove("active");
+        document.getElementById("Energize").classList.remove("active");
+        document.getElementById("Bright").classList.remove("active");
+        document.getElementById("Dimmed").classList.remove("active");
+        document.getElementById("Nightlight").classList.remove("active");
+        $.post("/scene", {
+            scenenummer: 6
+        });
+        }
+        function Concentrate() {
+        document.getElementById("Savanna sunset").classList.remove("active");
+        document.getElementById("Tropical Twilight").classList.remove("active");
+        document.getElementById("Artic Aurorat").classList.remove("active");
+        document.getElementById("Spring Blossom").classList.remove("active");
+        document.getElementById("Relax").classList.remove("active");
+        document.getElementById("Read").classList.remove("active");
+        document.getElementById("Concentrate").classList.add("active");
+        document.getElementById("Energize").classList.remove("active");
+        document.getElementById("Bright").classList.remove("active");
+        document.getElementById("Dimmed").classList.remove("active");
+        document.getElementById("Nightlight").classList.remove("active");
+        $.post("/scene", {
+            scenenummer: 7
+        });
+        }
+        function Energize() {
+        document.getElementById("Savanna sunset").classList.remove("active");
+        document.getElementById("Tropical Twilight").classList.remove("active");
+        document.getElementById("Artic Aurorat").classList.remove("active");
+        document.getElementById("Spring Blossom").classList.remove("active");
+        document.getElementById("Relax").classList.remove("active");
+        document.getElementById("Read").classList.remove("active");
+        document.getElementById("Concentrate").classList.remove("active");
+        document.getElementById("Energize").classList.add("active");
+        document.getElementById("Bright").classList.remove("active");
+        document.getElementById("Dimmed").classList.remove("active");
+        document.getElementById("Nightlight").classList.remove("active");
+        $.post("/scene", {
+            scenenummer: 8
+        });
+        }
+        function Bright() {
+        document.getElementById("Savanna sunset").classList.remove("active");
+        document.getElementById("Tropical Twilight").classList.remove("active");
+        document.getElementById("Artic Aurorat").classList.remove("active");
+        document.getElementById("Spring Blossom").classList.remove("active");
+        document.getElementById("Relax").classList.remove("active");
+        document.getElementById("Read").classList.remove("active");
+        document.getElementById("Concentrate").classList.remove("active");
+        document.getElementById("Energize").classList.remove("active");
+        document.getElementById("Bright").classList.add("active");
+        document.getElementById("Dimmed").classList.remove("active");
+        document.getElementById("Nightlight").classList.remove("active");
+        $.post("/scene", {
+            scenenummer: 9
+        });
+        }
+        function Dimmed() {
+        document.getElementById("Savanna sunset").classList.remove("active");
+        document.getElementById("Tropical Twilight").classList.remove("active");
+        document.getElementById("Artic Aurorat").classList.remove("active");
+        document.getElementById("Spring Blossom").classList.remove("active");
+        document.getElementById("Relax").classList.remove("active");
+        document.getElementById("Read").classList.remove("active");
+        document.getElementById("Concentrate").classList.remove("active");
+        document.getElementById("Energize").classList.remove("active");
+        document.getElementById("Bright").classList.remove("active");
+        document.getElementById("Dimmed").classList.add("active");
+        document.getElementById("Nightlight").classList.remove("active");
+        $.post("/scene", {
+            scenenummer: 10
+        });
+        }
+        function Nightlight() {
+            document.getElementById("Savanna sunset").classList.remove("active");
+            document.getElementById("Tropical Twilight").classList.remove("active");
+            document.getElementById("Artic Aurorat").classList.remove("active");
+            document.getElementById("Spring Blossom").classList.remove("active");
+            document.getElementById("Relax").classList.remove("active");
+            document.getElementById("Read").classList.remove("active");
+            document.getElementById("Concentrate").classList.remove("active");
+            document.getElementById("Energize").classList.remove("active");
+            document.getElementById("Bright").classList.remove("active");
+            document.getElementById("Dimmed").classList.remove("active");
+            document.getElementById("Nightlight").classList.add("active");
+            $.post("/scene", {
+	            scenenummer: 11
+	        });
+            }
+        window.onload = function() {
+            if ('{{ scenenummer }}' == 1){
+                document.getElementById("Savanna sunset").classList.add("active");
+            }
+            else if ('{{ scenenummer }}' == 2){
+                document.getElementById("Tropical Twilight").classList.add("active");
+            }
+            else if ('{{ scenenummer }}' == 3){
+                document.getElementById("Artic Aurorat").classList.add("active");
+            }
+            else if ('{{ scenenummer }}' == 4){
+                document.getElementById("Spring Blossom").classList.add("active");
+            }
+            else if ('{{ scenenummer }}' == 5){
+                document.getElementById("Relax").classList.add("active");
+            }
+            else if ('{{ scenenummer }}' == 6){
+                document.getElementById("Read").classList.add("active");
+            }
+            else if ('{{ scenenummer }}' == 7){
+                document.getElementById("Concentrate").classList.add("active");
+            }
+            else if ('{{ scenenummer }}' == 8){
+                document.getElementById("Energize").classList.add("active");
+            }
+            else if ('{{ scenenummer }}' == 9){
+                document.getElementById("Bright").classList.add("active");
+            }
+            else if ('{{ scenenummer }}' == 10){
+                document.getElementById("Dimmed").classList.add("active");
+            }
+            else if ('{{ scenenummer }}' == 11){
+                document.getElementById("Nightlight").classList.add("active");
+            }
+        }
+    </script>
+    <style>
+    img{
+        width: 50px;
+        height: 50px;
+        margin-top: 10px;
+    }
+    button{
+        background-color: #565454c2;
+    }
+    #Savanna\ sunset{
+        position: absolute;
+        left: 50px;
+        top: 30px;
+        border-radius: 10px;
+        width: 100px;
+        height: 120px;
+    }
+    #Savanna\ sunset.active{
+        /* background-color: rgb(200,75,34); */
+        background-image: linear-gradient(to right,rgb(255,95,42),rgb(255,126,69))
+    }
+    #Tropical\ Twilight{
+        position: absolute;
+        left: 210px;
+        top: 30px;
+        border-radius: 10px;
+        width: 100px;
+        height: 120px;
+    }
+    #Tropical\ Twilight.active{
+        /* background-color: rgb(96,80,123); */
+        background-image: linear-gradient(to right,rgb(255,202,236),rgb(255,160,77))
+    }
+    #Artic\ Aurorat{
+        position: absolute;
+        left: 50px;
+        top: 190px;
+        border-radius: 10px;
+        width: 100px;
+        height: 120px;
+    }
+    #Artic\ Aurorat.active{
+        /* background-color: rgb(22,97,138); */
+        background-image: linear-gradient(to right,rgb(63,79,255),rgb(106,255,167))
+    }
+    #Spring\ Blossom{
+        position: absolute;
+        left: 210px;
+        top: 190px;
+        border-radius: 10px;
+        width: 100px;
+        height: 120px;
+    }
+    #Spring\ Blossom.active{
+        /* background-color: rgb(215,155,175); */
+        background-image: linear-gradient(to right,rgb(255,184,208),rgb(255,104,155))
+    }
+    #Relax{
+        position: absolute;
+        left: 50px;
+        top: 350px;
+        border-radius: 10px;
+        width: 100px;
+        height: 120px;
+    }
+    #Relax.active{
+        background-color: rgb(255,188,85);
+    }
+    #Read{
+        position: absolute;
+        left: 210px;
+        top: 350px;
+        border-radius: 10px;
+        width: 100px;
+        height: 120px;
+    }
+    #Read.active{
+        background-color: rgb(255,210,129);
+    }
+    #Concentrate{
+        position: absolute;
+        left: 50px;
+        top: 510px;
+        border-radius: 10px;
+        width: 100px;
+        height: 120px;
+    }
+    #Concentrate.active{
+        background-color: rgb(255,240,198);
+    }
+    #Energize{
+        position: absolute;
+        left: 210px;
+        top: 510px;
+        border-radius: 10px;
+        width: 100px;
+        height: 120px;
+    }
+    #Energize.active{
+        background-color: rgb(246,255,254);
+    }
+    #Bright{
+        position: absolute;
+        left: 50px;
+        top: 670px;
+        border-radius: 10px;
+        width: 100px;
+        height: 120px;
+    }
+    #Bright.active{
+        background-color: rgb(255,207,120);
+    }
+    #Dimmed{
+        position: absolute;
+        left: 210px;
+        top: 670px;
+        border-radius: 10px;
+        width: 100px;
+        height: 120px;
+    }
+    #Dimmed.active{
+        background-color: rgb(255,205,120);
+    }
+    #Nightlight{
+        position: absolute;
+        left: 50px;
+        top: 830px;
+        border-radius: 10px;
+        width: 100px;
+        height: 120px;
+    }
+    #Nightlight.active{
+        background-color: rgb(255,160,39);
+    }
+
+    </style>
+    <div>
+        <button id="Savanna sunset" class= "Savanna sunset" type ="submit" name ="learn" value = "myimage" onclick=Savannasunset()>
+            <img src="{{ url_for('static', filename='images/f44d8803bf7719a3393d4c491ad75e66.jpg') }}" />
+            <p>Savanna sunset</p>
+        </button>
+    </div>
+    <div>
+        <button id="Tropical Twilight" class= "Tropical Twilight" type ="submit" name ="learn" value = "myimage" onclick=TropicalTwilight()>
+            <img src="{{ url_for('static', filename='images/tropical_twilight_thumb.webp') }}" />
+            <p>Tropical Twilight</p>
+        </button>
+    </div>
+    <div>
+        <button id="Artic Aurorat" class= "Artic Aurora" type ="submit" name ="learn" value = "myimage" onclick=ArticAurorat()>
+            <img src="{{ url_for('static', filename='images/arctic_aurora_thumb.webp') }}" />
+            <p>Artic Aurora</p>
+        </button>
+    </div>
+    <div>
+        <button id="Spring Blossom" class= "Spring Blossom" type ="submit" name ="learn" value = "myimage" onclick=SpringBlossom()>
+            <img src="{{ url_for('static', filename='images/spring_blossom_thumb.webp') }}" />
+            <p>Spring Blossom</p>
+        </button>
+    </div>
+    <div>
+        <button id="Relax" class= "Relax" type ="submit" name ="learn" value = "myimage" onclick=Relax()>
+            <img src="{{ url_for('static', filename='images/relax_ball_thumb.webp') }}" />
+            <p>Relax</p>
+        </button>
+    </div>
+    <div>
+        <button id="Read" class= "Read" type ="submit" name ="learn" value = "myimage" onclick=Read()>
+            <img src="{{ url_for('static', filename='images/reading_ball_thumb.webp') }}" />
+            <p>Read</p>
+        </button>
+    </div>
+    <div>
+        <button id="Concentrate" class= "Concentrate" type ="submit" name ="learn" value = "myimage" onclick=Concentrate()>
+            <img src="{{ url_for('static', filename='images/concentrate_ball_thumb.webp') }}" />
+            <p>Concentrate</p>
+        </button>
+    </div>
+    <div>
+        <button id="Energize" class= "Energize" type ="submit" name ="learn" value = "myimage" onclick=Energize()>
+            <img src="{{ url_for('static', filename='images/energize_ball_thumb.webp') }}" />
+            <p>Energize</p>
+        </button>
+    </div>
+    <div>
+        <button id="Bright" class= "Bright" type ="submit" name ="learn" value = "myimage" onclick=Bright()>
+            <img src="{{ url_for('static', filename='images/brightball_thumb.webp') }}" />
+            <p>Bright</p>
+        </button>
+    </div>
+    <div>
+        <button id="Dimmed" class= "Dimmed" type ="submit" name ="learn" value = "myimage" onclick=Dimmed()>
+            <img src="{{ url_for('static', filename='images/dimmedball_thumb.webp') }}" />
+            <p>Dimmed</p>
+        </button>
+    </div>
+    <div>
+        <button id="Nightlight" class= "Nightlight" type ="submit" name ="learn" value = "myimage" onclick=Nightlight()>
+            <img src="{{ url_for('static', filename='images/nightball_thumb.webp') }}" />
+            <p>Nightlight</p>
+        </button>
+    </div>
+    
+        <nav class="nav" id="fiets">
+            <a href="power" class="nav__link">
+                <i class="material-icons nav__icon">power_settings_new</i>
+                <span class="nav__text">power</span>
+            </a>
+            <a href="colorize" class="nav__link">
+                <i class="material-icons nav__icon">colorize</i>
+                <span class="nav__text">colorize</span>
+            </a>
+            <a href="#" class="nav__link">
+               <i class="material-icons nav__icon">devices</i>
+               <span class="nav__text">Devices</span>
+            </a>
+            <a href="alarm" class="nav__link active">
+                <i class="material-icons nav__icon">alarm</i>
+                <span class="nav__text">alarm</span>
+            </a>
+            <a href="Sunset" class="nav__link">
+                <i class="material-icons nav__icon">wb_sunny</i>
+                <span class="nav__text">Sunset</span>
+            </a>
+        </nav>
+    {% endblock %}
+ 
