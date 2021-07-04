@@ -513,39 +513,39 @@ def RightToLeft(strip, r, g, b, EyeSize, SpeedDelay, ReturnDelay):
     time.sleep(ReturnDelay)
 
 def SceneHue(strip,scenenummer):
-    if scenenummer == 1:
+    if scenenummer == "1":
         for i in range(2,strip.numPixels(),2):
             strip.setPixelColor(i, Color(255,95,42))
         for i in range(1,strip.numPixels(),2):
             strip.setPixelColor(i, Color(255,126,69))  
-    elif scenenummer == 2:
+    elif scenenummer == "2":
         for i in range(2,strip.numPixels(),2):
             strip.setPixelColor(i, Color(255,202,236))
         for i in range(1,strip.numPixels(),2):
             strip.setPixelColor(i, Color(255,160,77))
-    elif scenenummer == 3:
+    elif scenenummer == "3":
         for i in range(2,strip.numPixels(),2):
             strip.setPixelColor(i, Color(63,79,255))
         for i in range(1,strip.numPixels(),2):
             strip.setPixelColor(i, Color(106,255,167))    
-    elif scenenummer == 4:
+    elif scenenummer == "4":
         for i in range(2,strip.numPixels(),2):
             strip.setPixelColor(i, Color(255,184,208))
         for i in range(1,strip.numPixels(),2):
             strip.setPixelColor(i, Color(255,104,155))  
-    elif scenenummer == 5:
+    elif scenenummer == "5":
         vullen(strip, Color(255,188,85))
-    elif scenenummer == 6:
+    elif scenenummer == "6":
         vullen(strip, Color(255,210,129))
-    elif scenenummer == 7:
+    elif scenenummer == "7":
         vullen(strip, Color(255,240,198))
-    elif scenenummer == 8:
+    elif scenenummer == "8":
         vullen(strip, Color(246,255,254))
-    elif scenenummer == 9:
+    elif scenenummer == "9":
         vullen(strip, Color(255,207,120))
-    elif scenenummer == 10:
+    elif scenenummer == "10":
         vullen(strip, Color(255,205,120))
-    elif scenenummer == 11:
+    elif scenenummer == "11":
         vullen(strip, Color(255,160,39))
     strip.show()
 

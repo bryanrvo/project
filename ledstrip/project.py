@@ -252,7 +252,7 @@ def sw():
 def Sunset():
     global sunset
     if request.method == 'POST':
-        if request.form['submit_button'] == 'Do Something':
+        if request.form['submit_button'] == 'Haal de laatste versie op':
             print("gaat nu gebeuren")
             os.system("git pull")
             time.sleep(10)
